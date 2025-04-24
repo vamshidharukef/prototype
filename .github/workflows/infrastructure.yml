@@ -42,6 +42,7 @@ jobs:
             --rule-name "Allow specific IPs" \
             --action Allow \
             --ip-address ${{ secrets.ALLOWED_IP_RANGES }}
+            --priority 1000
 
       - name: Configure Azure Front Door
         run: |
