@@ -12,7 +12,7 @@
         "value": "prototype-af"
       },
       "wafPolicyName": {
-        "value": "prototype-waf"
+        "value": "prototypewaf"
       },
       "location": {
         "value": "uksouth"
