@@ -44,6 +44,19 @@ jobs:
             --ip-address ${{ secrets.ALLOWED_IP_RANGES }} \
             --priority 1000
 
+      - name: Check if Azure Front Door profile exists
+        id: check_fd
+        run: |
+          profile_exists=$(az afd profile show --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --profile-name ${{ secrets.AZURE_FRONTDOOR_NAME }} --query id --output tsv 2>/dev/null)
+          if [ -n "$profile_exists" ]; then
+            echo "Front Door profile already exists"
+            echo "fd_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Front Door profile does not exist"
+            echo "fd_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+
       - name: Create Azure Front Door (Standard)
         run: |
           az afd profile create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
