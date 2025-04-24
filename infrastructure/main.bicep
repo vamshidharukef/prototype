@@ -141,7 +141,7 @@ resource frontDoorSecurityPolicy 'Microsoft.Cdn/profiles/securityPolicies@2021-0
     parameters: {
       type: 'WebApplicationFirewall'
       wafPolicy: {
-        id: wafPolicy.id
+        id: resourceId('Microsoft.Network/FrontDoorWebApplicationFirewallPolicies', wafPolicyName) // Explicitly construct the WAF policy resource ID
       }
       associations: [
         {
