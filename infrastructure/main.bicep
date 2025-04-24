@@ -137,11 +137,14 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
 resource frontDoorSecurityPolicy 'Microsoft.Cdn/profiles/securityPolicies@2021-06-01' = {
   parent: frontDoorProfile
   name: '${frontDoorName}-securitypolicy'
+  dependsOn: [
+    wafPolicy // Ensure WAF policy is deployed first
+  ]
   properties: {
     parameters: {
       type: 'WebApplicationFirewall'
       wafPolicy: {
-        id: resourceId('Microsoft.Network/FrontDoorWebApplicationFirewallPolicies', wafPolicyName) // Explicitly construct the WAF policy resource ID
+        id: wafPolicy.id // Use the ID of the deployed WAF policy
       }
       associations: [
         {
