@@ -41,7 +41,7 @@ jobs:
             --name ${{ secrets.AZURE_WEBAPP_NAME }} \
             --rule-name "Allow specific IPs" \
             --action Allow \
-            --ip-address ${{ secrets.ALLOWED_IP_RANGES }}
+            --ip-address ${{ secrets.ALLOWED_IP_RANGES }} \
             --priority 1000
 
       - name: Configure Azure Front Door
