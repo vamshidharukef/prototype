@@ -44,21 +44,35 @@ jobs:
             --ip-address ${{ secrets.ALLOWED_IP_RANGES }} \
             --priority 1000
 
-      - name: Configure Azure Front Door
+      - name: Create Azure Front Door (Standard)
         run: |
-          az network front-door create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
-            --backend-address ${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net
+          az afd profile create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --profile-name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
+            --sku Standard
+      
+      - name: Create route in Azure Front Door
+        run: |
+          az afd route create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --profile-name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
+            --endpoint-name default \
+            --origin-group default \
+            --route-name default \
+            --supported-protocols Http Https \
+            --patterns-to-match '/*' \
+            --forwarding-protocol MatchRequest
 
-      - name: Configure WAF Policy
+      - name: Create WAF Policy for Front Door
         run: |
-          az network front-door waf-policy create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          az network front-door waf-policy create \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --name ${{ secrets.WAF_POLICY_NAME }} \
-            --mode Prevention \
-            --sku Premium_AzureFrontDoor
+            --sku Standard_AzureFrontDoor \
+            --mode Prevention
 
       - name: Apply WAF Policy to Front Door
         run: |
-          az network front-door update --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
-            --web-application-firewall-policy ${{ secrets.WAF_POLICY_NAME }}
+          az afd security-policy create \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --profile-name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
+            --security-policy-name default-security-policy \
+            --waf-policy ${{ secrets.WAF_POLICY_NAME }}
