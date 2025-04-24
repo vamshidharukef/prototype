@@ -112,7 +112,7 @@ resource frontDoorRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' 
   }
 }
 
-resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2020-11-01' = {
+resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2024-02-01' = {
   name: wafPolicyName
   location: 'global'
   sku: {
@@ -137,9 +137,7 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
 resource frontDoorSecurityPolicy 'Microsoft.Cdn/profiles/securityPolicies@2021-06-01' = {
   parent: frontDoorProfile
   name: '${frontDoorName}-securitypolicy'
-  dependsOn: [
-    wafPolicy // Ensure WAF policy is deployed first
-  ]
+  
   properties: {
     parameters: {
       type: 'WebApplicationFirewall'
