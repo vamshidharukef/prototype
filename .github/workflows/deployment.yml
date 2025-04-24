@@ -1,0 +1,54 @@
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'  # Run daily at 2 AM UTC
+
+jobs:
+  setup-environment:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    # Removed invalid dependency
+    steps:
+      - name: Placeholder Step
+        run: echo "Setting up environment"
+
+  deploy-webapp:
+    name: Deploy Web App
+    runs-on: ubuntu-latest
+    # Removed invalid dependency
+    # needs: deploy-infrastructure
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies
+        env:
+          APP_NAME: ${{ secrets.AZURE_WEBAPP_NAME || 'default-webapp-name' }}
+          PUBLISH_PROFILE: ${{ secrets.AZURE_PUBLISH_PROFILE || 'default-publish-profile' }}
+        run: |
+          echo "App Name: $APP_NAME"
+          echo "Publish Profile: $PUBLISH_PROFILE"
+          npm run build
+
+      - name: Deploy to Azure Web App
+        run: |
+          az webapp deployment source config-zip \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP || 'default-resource-group' }} \
+            --name ${{ secrets.AZURE_WEBAPP_NAME || 'default-webapp-name' }} \
+            --slot production \
+            --src ${{ secrets.AZURE_PUBLISH_PROFILE || 'default-publish-profile' }}
+
+      - name: Purge Azure Front Door
+        run: |
+          az network front-door purge-endpoint --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
+            --content-paths "/*"

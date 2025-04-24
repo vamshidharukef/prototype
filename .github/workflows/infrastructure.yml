@@ -1,0 +1,64 @@
+name: Infrastructure 🔨
+run-name: Proto-type base infrastructure build from ${{ github.repository }}
+
+on:
+  push:
+    branches:
+      - main
+env:
+  PRODUCT: prototype
+  ENVIRONMENT: infrastructure
+  TIMEZONE: '${{ vars.TIMEZONE }}'
+  # Deployment environment target i.e., `development`, `staging`, `production`
+  TARGET: ${{ vars.ENVIRONMENT }}
+
+jobs:
+# 1. Setup infrastructure variables
+  deploy-infrastructure:
+    name: Deploy Infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy Azure Resources
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          scope: "/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}"
+          template: ./infrastructure/main.bicep
+          parameters: ./infrastructure/parameters.json
+
+      - name: Configure IP Restrictions
+        run: |
+          az webapp config access-restriction add --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --name ${{ secrets.AZURE_WEBAPP_NAME }} \
+            --rule-name "Allow specific IPs" \
+            --action Allow \
+            --ip-address ${{ secrets.ALLOWED_IP_RANGES }}
+
+      - name: Configure Azure Front Door
+        run: |
+          az network front-door create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
+            --backend-address ${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net
+
+      - name: Configure WAF Policy
+        run: |
+          az network front-door waf-policy create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --name ${{ secrets.WAF_POLICY_NAME }} \
+            --mode Prevention \
+            --sku Premium_AzureFrontDoor
+
+      - name: Apply WAF Policy to Front Door
+        run: |
+          az network front-door update --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
+            --web-application-firewall-policy ${{ secrets.WAF_POLICY_NAME }}
