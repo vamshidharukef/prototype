@@ -16,7 +16,7 @@ jobs:
 # 1. Setup infrastructure variables
   setup:
     name: Setup 🔧
-    runs-on: [linux, ubuntu-latest]
+    runs-on: [ubuntu-latest]
     outputs:
       environment: ${{ env.ENVIRONMENT }}
       timezone: ${{ env.TIMEZONE }}
