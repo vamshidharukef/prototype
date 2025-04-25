@@ -14,18 +14,85 @@ env:
 
 jobs:
 # 1. Setup infrastructure variables
-  deploy-infrastructure:
-    name: Deploy Infrastructure
-    runs-on: ubuntu-latest
-
+  setup:
+    name: Setup 🔧
+    runs-on: [self-hosted, prototype, infrastructure]
+    outputs:
+      environment: ${{ env.ENVIRONMENT }}
+      timezone: ${{ env.TIMEZONE }}
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Environment 🧪
+        run: echo "Environment set to ${{ env.ENVIRONMENT }}"
 
-      - name: Azure Login
+      - name: Timezone 🌐
+        run: echo "Timezone set to ${{ env.TIMEZONE }}"
+
+      - name: Login 🔐
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }} 
+
+      - name: Azure defaults ✨
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            # Basic
+            az configure --defaults location=${{ vars.REGION }}
+            az configure --defaults group=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
+
+      - name: Resource group 🏗️
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az group create \
+            --name rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --tags ${{ env.TAGS }}
+
+      - name: Plan 📝
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az appservice plan create \
+            --name appservice-plan-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --is-linux \
+            --sku ${{ vars.APP_SERVICE_PLAN }} \
+            --tags ${{ env.TAGS }}
+
+      - name: Log analytics workspace 📝
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az monitor log-analytics workspace create \
+            --name log-workspace-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --quota ${{ vars.LOG_QUOTA }} \
+            --retention-time ${{ vars.LOG_RETENTION_DAY }} \
+            --sku ${{ vars.LOG_PLAN }} \
+            --tags ${{ env.TAGS }}
+
+      - name: Virtual network 🧵
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az network vnet create \
+            --name vnet-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
+            --address-prefix ${{ vars.VNET_ADDRESS_PREFIX }} \
+            --tags ${{ env.TAGS }}    
+
+      - name: Subnets 💫
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            # WebApp
+            az network vnet subnet create \
+            --name snet-webapp-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+            --address-prefixes ${{ vars.VNET_SUBNET_WEBAPP_PREFIX }} \
+            --vnet-name vnet-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}
+
+            # Private endpoint
+            az network vnet subnet create \
+            --name snet-private-${{ env.PRODUCT }}-${{ vars.VERSION }} \
+            --address-prefixes ${{ vars.VNET_SUBNET_PRIVATE_PREFIX }} \
+            --vnet-name vnet-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} 
 
       - name: Deploy Azure Resources
         uses: azure/arm-deploy@v1
@@ -33,59 +100,7 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP }}
           template: ./infrastructure/main.bicep
-          parameters: ./infrastructure/parameters.json
+          parameters: ./infrastructure/parameters.json                                     
+  
 
-      - name: Configure IP Restrictions
-        run: |
-          az webapp config access-restriction add --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --name ${{ secrets.AZURE_WEBAPP_NAME }} \
-            --rule-name "Allow specific IPs" \
-            --action Allow \
-            --ip-address ${{ secrets.ALLOWED_IP_RANGES }} \
-            --priority 1000
-
-      - name: Check if Azure Front Door profile exists
-        id: check_fd
-        run: |
-          profile_exists=$(az afd profile show --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --profile-name ${{ secrets.AZURE_FRONTDOOR_NAME }} --query id --output tsv 2>/dev/null)
-          if [ -n "$profile_exists" ]; then
-            echo "Front Door profile already exists"
-            echo "fd_exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "Front Door profile does not exist"
-            echo "fd_exists=false" >> $GITHUB_OUTPUT
-          fi
-
-
-      - name: Create Azure Front Door (Standard)
-        run: |
-          az afd profile create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --profile-name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
-            --sku Standard_AzureFrontDoor 
       
-      - name: Create route in Azure Front Door
-        run: |
-          az afd route create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --profile-name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
-            --endpoint-name default \
-            --origin-group default \
-            --route-name default \
-            --supported-protocols Http Https \
-            --patterns-to-match '/*' \
-            --forwarding-protocol MatchRequest
-
-      - name: Create WAF Policy for Front Door
-        run: |
-          az network front-door waf-policy create \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --name ${{ secrets.WAF_POLICY_NAME }} \
-            --sku Standard_AzureFrontDoor \
-            --mode Prevention
-
-      - name: Apply WAF Policy to Front Door
-        run: |
-          az afd security-policy create \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --profile-name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
-            --security-policy-name default-security-policy \
-            --waf-policy ${{ secrets.WAF_POLICY_NAME }}
