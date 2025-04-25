@@ -61,7 +61,7 @@ jobs:
         run: |
           az afd profile create --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --profile-name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
-            --sku Standard_Microsoft 
+            --sku Standard_AzureFrontDoor 
       
       - name: Create route in Azure Front Door
         run: |
@@ -79,7 +79,7 @@ jobs:
           az network front-door waf-policy create \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --name ${{ secrets.WAF_POLICY_NAME }} \
-            --sku Standard_Microsoft \
+            --sku Standard_AzureFrontDoor \
             --mode Prevention
 
       - name: Apply WAF Policy to Front Door
