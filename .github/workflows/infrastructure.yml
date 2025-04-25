@@ -16,7 +16,7 @@ jobs:
 # 1. Setup infrastructure variables
   setup:
     name: Setup 🔧
-    runs-on: [self-hosted, prototype, infrastructure]
+    runs-on: [self-hosted]
     outputs:
       environment: ${{ env.ENVIRONMENT }}
       timezone: ${{ env.TIMEZONE }}
