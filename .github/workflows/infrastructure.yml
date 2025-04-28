@@ -46,7 +46,8 @@ jobs:
           inlineScript: |
             az group create \
             --name rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --tags ${{ env.TAGS }}
+            --tags ${{ env.TAGS }} \
+            --location ${{ env.REGION }}
 
       - name: Plan 📝
         uses: azure/cli@v2
