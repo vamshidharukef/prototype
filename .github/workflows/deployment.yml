@@ -2,6 +2,10 @@ name: Deployment
 run-name: 🚀 Deploying from ${{ github.ref_name }}
 
 on:
+  workflow_run:
+    workflows: ["Infrastructure 🔨"]
+    types:
+      - completed
   schedule:
     - cron: '0 2 * * *'
 
