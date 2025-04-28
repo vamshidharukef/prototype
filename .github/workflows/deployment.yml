@@ -1,54 +1,84 @@
+name: Deployment
+run-name: 🚀 Deploying from ${{ github.ref_name }}
+
 on:
+  schedule:
+    - cron: '0 2 * * *'
+
   push:
     branches:
-      - main
-  workflow_dispatch:
-  schedule:
-    - cron: '0 2 * * *'  # Run daily at 2 AM UTC
+      # Manual deployment
+      - main      
+
+env:
+  PRODUCT: exip
+  ENVIRONMENT: ${{ github.ref_name }}
+  TIMEZONE: ${{ vars.TIMEZONE }}
 
 jobs:
-  setup-environment:
-    name: Setup Environment
-    runs-on: ubuntu-latest
-    # Removed invalid dependency
-    steps:
-      - name: Placeholder Step
-        run: echo "Setting up environment"
-
-  deploy-webapp:
-    name: Deploy Web App
-    runs-on: ubuntu-latest
-    # Removed invalid dependency
-    # needs: deploy-infrastructure
+  # 1. Base actions configrations
+  setup:
+    name: Setup 🔧
+    runs-on: [ubuntu-latest]
+    outputs:
+      product: ${{ env.PRODUCT }}
+      environment: ${{ steps.environment.outputs.environment }}
+      timezone: ${{ env.TIMEZONE }}
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Environment 🧪
+        id: environment
+        run: |
+          if [[ "${{ env.ENVIRONMENT }}" == "main" ]]; then
+            echo "environment=dev" >> "$GITHUB_OUTPUT"
+          else
+            echo "environment=${{ env.ENVIRONMENT }}" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Timezone 🌐
+        run: echo "Timezone set to ${{ env.TIMEZONE }}"
+
+      # 2. WebApp deployment
+  webapp:
+    name: WebApp 🌐
+    needs: [setup]
+    environment: ${{ needs.setup.outputs.environment }}
+    runs-on: [ubuntu-latest]
+    env:
+      ENVIRONMENT: ${{ needs.setup.outputs.environment }}
+
+    strategy:
+      max-parallel: 1
+      # Do not cancel in-progress jobs upon failure
+      fail-fast: false
+      # Single dimension matrix
+      matrix:
+        webapp: ['vamshi-test']
+
+    concurrency:
+      group: deployment-webapp-${{ github.workflow }}-${{ github.workflow_ref }}-${{ matrix.webapp }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Repository 🗂️🌎
+        uses: actions/checkout@v4
+
+      
+      - name: Deploy ⚡
+        uses: ./.github/actions/webapp
         with:
-          node-version: '16'
+          region: ${{ vars.REGION }}
+          group: rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }}
+          credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          
 
-      - name: Install Dependencies
-        env:
-          APP_NAME: ${{ secrets.AZURE_WEBAPP_NAME || 'default-webapp-name' }}
-          PUBLISH_PROFILE: ${{ secrets.AZURE_PUBLISH_PROFILE || 'default-publish-profile' }}
-        run: |
-          echo "App Name: $APP_NAME"
-          echo "Publish Profile: $PUBLISH_PROFILE"
-          npm run build
-
-      - name: Deploy to Azure Web App
-        run: |
-          az webapp deployment source config-zip \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP || 'default-resource-group' }} \
-            --name ${{ secrets.AZURE_WEBAPP_NAME || 'default-webapp-name' }} \
-            --slot production \
-            --src ${{ secrets.AZURE_PUBLISH_PROFILE || 'default-publish-profile' }}
-
-      - name: Purge Azure Front Door
-        run: |
-          az network front-door purge-endpoint --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --name ${{ secrets.AZURE_FRONTDOOR_NAME }} \
-            --content-paths "/*"
+      - name: UI 🧱
+        uses: azure/cli@v2
+        if: ${{ 'vamshi-test' == matrix.webapp }}
+        with:
+          inlineScript: |
+            az webapp config appsettings set \
+            --name app-${{ env.PRODUCT }}-ui-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
+            --settings \
+            TZ='${{ vars.TIMEZONE }}' \
+            NODE_ENV='${{ vars.NODE_ENV }}'   
