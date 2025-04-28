@@ -15,7 +15,7 @@
         "value": "${WAF_POLICY_NAME}"
       },
       "location": {
-        "value": "${vars.REGION}"
+        "value": "${LOCATION}"
       },
       "sku": {
         "value": "${SKU}"
