@@ -64,12 +64,17 @@ jobs:
         uses: actions/checkout@v4
 
       
-      - name: Deploy ⚡
-        uses: ./.github/actions/webapp
+      - name: Login to Azure 🔐
+        uses: azure/login@v1
         with:
-          region: ${{ vars.REGION }}
-          group: rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }}
-          credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to WebApp ⚡
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: app-${{ env.PRODUCT }}-${{ matrix.webapp }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }}
+          resource-group: rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }}
+          package: .
           
 
       - name: UI 🧱
@@ -78,7 +83,8 @@ jobs:
         with:
           inlineScript: |
             az webapp config appsettings set \
-            --name app-${{ env.PRODUCT }}-ui-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
+            --name app-${{ env.PRODUCT }}-${{ matrix.webapp }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
+            --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
             --settings \
             TZ='${{ vars.TIMEZONE }}' \
             NODE_ENV='${{ vars.NODE_ENV }}'   
