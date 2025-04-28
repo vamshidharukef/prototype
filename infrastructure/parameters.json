@@ -3,22 +3,22 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
       "webAppName": {
-        "value": "vamshi-test"
+        "value": "${WEBAPP_NAME}"
       },
       "appServicePlanName": {
-        "value": "basic-plan"
+        "value": "${APP_SERVICE_PLAN_NAME}"
       },
       "frontDoorName": {
         "value": "prototype-af"
       },
       "wafPolicyName": {
-        "value": "prototypewaf"
+        "value": "${WAF_POLICY_NAME}"
       },
       "location": {
-        "value": ""
+        "value": "${LOCATION}"
       },
       "sku": {
-        "value": "B1"
+        "value": "${SKU}"
       }
     }
   }	

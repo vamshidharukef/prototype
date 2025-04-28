@@ -113,7 +113,13 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
           template: ./infrastructure/main.bicep
-          parameters: ./infrastructure/parameters.json                                     
+          parameters: ./infrastructure/parameters.json
+        env:
+        WEBAPP_NAME: ${{ secrets.WEBAPP_NAME }}
+        APP_SERVICE_PLAN_NAME: ${{ secrets.APP_SERVICE_PLAN_NAME }}
+        WAF_POLICY_NAME: ${{ secrets.WAF_POLICY_NAME }}
+        LOCATION: ${{ secrets.LOCATION }}
+        SKU: ${{ secrets.SKU }}                                       
   
 
       
