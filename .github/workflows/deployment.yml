@@ -83,7 +83,7 @@ jobs:
         with:
           inlineScript: |
             az webapp config appsettings set \
-            --name app-${{ env.PRODUCT }}-${{ matrix.webapp }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
+            --name ${{ matrix.webapp }} \
             --resource-group rg-${{ env.PRODUCT }}--${{ vars.VERSION }} \
             --settings \
             TZ='${{ vars.TIMEZONE }}' \
