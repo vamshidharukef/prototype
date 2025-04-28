@@ -110,7 +110,7 @@ jobs:
       - name: Replace GitHub variables into parameters.json
         run: | 
           # Replace GitHub variables into parameters.json
-          sed -i "s|location|${{ secrets.LOCATION }}|g" parameters.json
+          sed -i "s|location|${{ secrets.LOCATION }}|g" ./infrastructure/parameters.json
           
     
       - name: Deploy Azure Resources
