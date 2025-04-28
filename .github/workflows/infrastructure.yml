@@ -101,6 +101,9 @@ jobs:
             --address-prefixes ${{ vars.VNET_SUBNET_PRIVATE_PREFIX }} \
             --vnet-name vnet-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} 
 
+      - name: Repository 🗃️
+        uses: actions/checkout@v4
+        
       - name: Deploy Azure Resources
         uses: azure/arm-deploy@v1
         with:
