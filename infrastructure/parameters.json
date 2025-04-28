@@ -6,13 +6,13 @@
         "value": "${WEBAPP_NAME}"
       },
       "appServicePlanName": {
-        "value": "${APP_SERVICE_PLAN_NAME}"
+        "value": "basic-plan"
       },
       "frontDoorName": {
         "value": "prototype-af"
       },
       "wafPolicyName": {
-        "value": "${WAF_POLICY_NAME}"
+        "value": "prototypewaf"
       },
       "location": {
         "value": ""

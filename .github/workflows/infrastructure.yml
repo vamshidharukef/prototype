@@ -112,8 +112,6 @@ jobs:
           # Replace GitHub variables into parameters.json
           sed -i "s|location|${{ secrets.LOCATION }}|g" ./infrastructure/parameters.json
           sed -i "s|webappName|${{ secrets.WEBAPP_NAME }}|g" ./infrastructure/parameters.json
-          sed -i "s|appServicePlanName|${{ secrets.APP_SERVICE_PLAN_NAME }}|g" ./infrastructure/parameters.json
-          sed -i "s|wafPolicyName|${{ secrets.WAF_POLICY_NAME }}|g" ./infrastructure/parameters.json
           sed -i "s|sku|${{ secrets.SKU }}|g" ./infrastructure/parameters.json
           
     
