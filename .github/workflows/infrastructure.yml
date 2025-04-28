@@ -107,6 +107,12 @@ jobs:
       - name: Repository 🗃️
         uses: actions/checkout@v4
 
+      - name: Replace GitHub variables into parameters.json
+        run: | 
+          # Replace GitHub variables into parameters.json
+          sed -i "s|location|${{ secrets.LOCATION }}|g" parameters.json
+          
+    
       - name: Deploy Azure Resources
         uses: azure/arm-deploy@v1
         with:
@@ -118,7 +124,6 @@ jobs:
           WEBAPP_NAME: ${{ secrets.WEBAPP_NAME }}
           APP_SERVICE_PLAN_NAME: ${{ secrets.APP_SERVICE_PLAN_NAME }}
           WAF_POLICY_NAME: ${{ secrets.WAF_POLICY_NAME }}
-          LOCATION: ${{ vars.REGION }}
           SKU: ${{ secrets.SKU }}                                       
   
 
