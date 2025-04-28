@@ -48,9 +48,8 @@ jobs:
             --location ${{ vars.REGION }} \
             --resource-group rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --name rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --tags ${{ env.TAGS }} \
-            --location ${{ vars.REGION }}
-
+            --tags ${{ env.TAGS }} 
+            
       - name: Plan 📝
         uses: azure/cli@v2
         with:
