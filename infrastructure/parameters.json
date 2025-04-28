@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
       "webAppName": {
-        "value": "${WEBAPP_NAME}"
+        "value": "vamshi-test"
       },
       "appServicePlanName": {
         "value": "basic-plan"
@@ -18,7 +18,7 @@
         "value": ""
       },
       "sku": {
-        "value": "${SKU}"
+        "value": "B1"
       }
     }
   }	
