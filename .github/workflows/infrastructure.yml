@@ -28,7 +28,7 @@ jobs:
         run: echo "Timezone set to ${{ env.TIMEZONE }}"
 
       - name: Tags 🏷️
-        run: echo TAGS='Environment=${{ env.TAGS }}' \
+        run: echo TAGS='Environment=dev' \
           'Product=${{ env.PRODUCT }}' \
           'Team=development' >> $GITHUB_ENV  
 
