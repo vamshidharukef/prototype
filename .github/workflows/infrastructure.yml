@@ -115,11 +115,11 @@ jobs:
           template: ./infrastructure/main.bicep
           parameters: ./infrastructure/parameters.json
         env:
-        WEBAPP_NAME: ${{ secrets.WEBAPP_NAME }}
-        APP_SERVICE_PLAN_NAME: ${{ secrets.APP_SERVICE_PLAN_NAME }}
-        WAF_POLICY_NAME: ${{ secrets.WAF_POLICY_NAME }}
-        LOCATION: ${{ secrets.LOCATION }}
-        SKU: ${{ secrets.SKU }}                                       
+          WEBAPP_NAME: ${{ secrets.WEBAPP_NAME }}
+          APP_SERVICE_PLAN_NAME: ${{ secrets.APP_SERVICE_PLAN_NAME }}
+          WAF_POLICY_NAME: ${{ secrets.WAF_POLICY_NAME }}
+          LOCATION: ${{ secrets.LOCATION }}
+          SKU: ${{ secrets.SKU }}                                       
   
 
       
