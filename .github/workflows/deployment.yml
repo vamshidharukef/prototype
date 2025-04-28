@@ -15,7 +15,7 @@ on:
       - main      
 
 env:
-  PRODUCT: exip
+  PRODUCT: prototype
   ENVIRONMENT: ${{ github.ref_name }}
   TIMEZONE: ${{ vars.TIMEZONE }}
 
@@ -26,7 +26,6 @@ jobs:
     runs-on: [ubuntu-latest]
     outputs:
       product: ${{ env.PRODUCT }}
-      environment: ${{ steps.environment.outputs.environment }}
       timezone: ${{ env.TIMEZONE }}
 
     steps:
@@ -46,10 +45,7 @@ jobs:
   webapp:
     name: WebApp 🌐
     needs: [setup]
-    environment: ${{ needs.setup.outputs.environment }}
-    runs-on: [ubuntu-latest]
-    env:
-      ENVIRONMENT: ${{ needs.setup.outputs.environment }}
+    runs-on: [ubuntu-latest]    
 
     strategy:
       max-parallel: 1
