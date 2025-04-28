@@ -45,6 +45,8 @@ jobs:
         with:
           inlineScript: |
             az group create \
+            --location ${{ vars.REGION }} \
+            --resource-group rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --name rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --tags ${{ env.TAGS }} \
             --location ${{ env.REGION }}
