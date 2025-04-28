@@ -77,14 +77,14 @@ jobs:
           package: .
           
 
-      - name: UI 🧱
+      - name: Configure WebApp Settings 🧱
         uses: azure/cli@v2
         if: ${{ 'vamshi-test' == matrix.webapp }}
         with:
           inlineScript: |
             az webapp config appsettings set \
             --name app-${{ env.PRODUCT }}-${{ matrix.webapp }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
-            --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
+            --resource-group rg-${{ env.PRODUCT }}--${{ vars.VERSION }} \
             --settings \
             TZ='${{ vars.TIMEZONE }}' \
             NODE_ENV='${{ vars.NODE_ENV }}'   
