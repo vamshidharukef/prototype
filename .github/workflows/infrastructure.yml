@@ -30,18 +30,6 @@ jobs:
       - name: Timezone 🌐
         run: echo "Timezone set to ${{ env.TIMEZONE }}"
 
-      - name: Set Tags 🏷️
-        run: |
-          TAGS_JSON=$(jq -n \
-            --arg env "dev" \
-            --arg product "${{ env.PRODUCT }}" \
-            --arg team "development" \
-            '{Environment: $env, Product: $product, Team: $team}')
-          TAGS_ESCAPED=$(echo $TAGS_JSON | jq -c . | sed 's/"/\\"/g')
-          echo "TAGS_JSON=$TAGS_ESCAPED" >> $GITHUB_ENV
-          TAGS_CLI=$(echo $TAGS_JSON | jq -r 'to_entries | map("\(.key)=\(.value)") | join(" ")')
-          echo "TAGS_CLI=$TAGS_CLI" >> $GITHUB_ENV
-
       - name: Login 🔐
         uses: azure/login@v2
         with:
@@ -62,8 +50,7 @@ jobs:
             az group create \
             --location ${{ vars.REGION }} \
             --resource-group rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --name rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --tags ${{ env.TAGS_CLI }} \
+            --name rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}            
             
       - name: Set Resource Group Name
         run: echo "RESOURCE_GROUP_NAME=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}" >> $GITHUB_ENV
