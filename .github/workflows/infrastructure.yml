@@ -32,7 +32,14 @@ jobs:
 
       - name: Set Tags 🏷️
         run: |
-         echo "TAGS={\"Environment\":\"dev\",\"Product\":\"${{ env.PRODUCT }}\",\"Team\":\"development\"}" >> $GITHUB_ENV 
+          run: |
+          TAGS_JSON=$(jq -n \
+            --arg env "dev" \
+            --arg product "${{ env.PRODUCT }}" \
+            --arg team "development" \
+            '{Environment: $env, Product: $product, Team: $team}')
+          TAGS_ESCAPED=$(echo "$TAGS_JSON" | sed 's/"/\\"/g')
+          echo "TAGS=$TAGS_ESCAPED" >> $GITHUB_ENV 
 
       - name: Login 🔐
         uses: azure/login@v2
@@ -63,14 +70,14 @@ jobs:
       - name: Replace GitHub variables into parameters.json
         run: | 
           # Replace GitHub variables into parameters.json
-          sed -i 's/{{LOG_PLAN}}/${{ vars.LOG_PLAN }}/g' ./infrastructure/parameters.json
-          sed -i 's/{{LOCATION}}/${{ vars.REGION }}/g' ./infrastructure/parameters.json
-          sed -i 's/{{LOG_QUOTA}}/${{ vars.LOG_QUOTA }}/g' ./infrastructure/parameters.json
-          sed -i 's/{{LOG_RETENTION_DAYS}}/${{ vars.LOG_RETENTION_DAY }}/g' ./infrastructure/parameters.json
-          sed -i 's/{{VNET_ADDRESS_PREFIX}}/${{ vars.VNET_ADDRESS_PREFIX }}/g' ./infrastructure/parameters.json
-          sed -i 's/{{VNET_SUBNET_PRIVATE_PREFIX}}/${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}/g' ./infrastructure/parameters.json
-          sed -i 's/{{VNET_SUBNET_WEBAPP_PREFIX}}/${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}/g' ./infrastructure/parameters.json
-          sed -i 's/{{TAGS}}/${{ env.TAGS }}/g' ./infrastructure/parameters.json
+          sed -i "s|{{LOG_PLAN}}|${{ vars.LOG_PLAN }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{LOCATION}}|${{ vars.REGION }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{LOG_QUOTA}}|${{ vars.LOG_QUOTA }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{LOG_RETENTION_DAYS}}|${{ vars.LOG_RETENTION_DAY }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{VNET_ADDRESS_PREFIX}}|${{ vars.VNET_ADDRESS_PREFIX }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{VNET_SUBNET_PRIVATE_PREFIX}}|${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{VNET_SUBNET_WEBAPP_PREFIX}}|${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{TAGS}}|${{ env.TAGS }}|g" ./infrastructure/parameters.json
 
       - name: Deploy Azure Resources
         uses: azure/arm-deploy@v1
