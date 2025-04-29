@@ -63,6 +63,10 @@ jobs:
       - name: Repository 🗂️🌎
         uses: actions/checkout@v4
 
+      - name: Update Azure CLI
+        shell: pwsh
+        run: |
+          az upgrade --yes
       
       - name: Login to Azure 🔐
         uses: azure/login@v1
@@ -79,7 +83,7 @@ jobs:
           echo "AZURE_WEBAPP_PUBLISH_PROFILE=$profile" >> $env:GITHUB_ENV
       
       - name: Deploy to WebApp ⚡
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ matrix.webapp }}
           publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
@@ -87,13 +91,12 @@ jobs:
           
 
       - name: Configure WebApp Settings 🧱
-        uses: azure/cli@v2
+        shell: pwsh
         if: ${{ 'vamshi-test' == matrix.webapp }}
-        with:
-          inlineScript: |
-            az webapp config appsettings set \
-            --name ${{ matrix.webapp }} \
-            --resource-group rg-${{ env.PRODUCT }}--${{ vars.VERSION }} \
-            --settings \
-            TZ='${{ vars.TIMEZONE }}' \
-            NODE_ENV='${{ vars.NODE_ENV }}   
+        run: |
+          az webapp config appsettings set `
+            --name ${{ matrix.webapp }} `
+            --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} `
+            --settings `
+            TZ='${{ vars.TIMEZONE }}' `
+            NODE_ENV='${{ vars.NODE_ENV }}'
