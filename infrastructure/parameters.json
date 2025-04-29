@@ -24,7 +24,7 @@
         "value": "{{LOG_PLAN}}"
       },
       "logQuota": {
-        "value": 0.023
+        "value": 3
       },
       "logRetentionDays": {
         "value": 30
