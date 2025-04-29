@@ -65,9 +65,9 @@ jobs:
           sed -i 's/{{LOCATION}}/${{ vars.REGION }}/g' ./infrastructure/parameters.json
           sed -i 's/{{LOG_QUOTA}}/${{ vars.LOG_QUOTA }}/g' ./infrastructure/parameters.json
           sed -i 's/{{LOG_RETENTION_DAYS}}/${{ vars.LOG_RETENTION_DAY }}/g' ./infrastructure/parameters.json
-          sed -i 's/{{VNET_ADDRESS_PREFIX}}/${{ env.VNET_ADDRESS_PREFIX }}/g' ./infrastructure/parameters.json
-          sed -i 's/{{VNET_SUBNET_PRIVATE_PREFIX}}/${{ env.VNET_SUBNET_PRIVATE_PREFIX }}/g' ./infrastructure/parameters.json
-          sed -i's/{{VNET_SUBNET_WEBAPP_PREFIX}}/${{ env.VNET_SUBNET_WEBAPP_PREFIX }}/g' ./infrastructure/parameters.json
+          sed -i 's/{{VNET_ADDRESS_PREFIX}}/${{ vars.VNET_ADDRESS_PREFIX }}/g' ./infrastructure/parameters.json
+          sed -i 's/{{VNET_SUBNET_PRIVATE_PREFIX}}/${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}/g' ./infrastructure/parameters.json
+          sed -i's/{{VNET_SUBNET_WEBAPP_PREFIX}}/${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}/g' ./infrastructure/parameters.json
 
       - name: Repository 🗃️
         uses: actions/checkout@v4
