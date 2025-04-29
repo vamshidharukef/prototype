@@ -21,6 +21,9 @@ jobs:
       environment: ${{ env.ENVIRONMENT }}
       timezone: ${{ env.TIMEZONE }}
     steps:
+      - name: Repository 🗃️
+        uses: actions/checkout@v4
+
       - name: Environment 🧪
         run: echo "Environment set to ${{ env.ENVIRONMENT }}"
 
@@ -67,10 +70,7 @@ jobs:
           sed -i 's/{{LOG_RETENTION_DAYS}}/${{ vars.LOG_RETENTION_DAY }}/g' ./infrastructure/parameters.json
           sed -i 's/{{VNET_ADDRESS_PREFIX}}/${{ vars.VNET_ADDRESS_PREFIX }}/g' ./infrastructure/parameters.json
           sed -i 's/{{VNET_SUBNET_PRIVATE_PREFIX}}/${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}/g' ./infrastructure/parameters.json
-          sed -i's/{{VNET_SUBNET_WEBAPP_PREFIX}}/${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}/g' ./infrastructure/parameters.json
-
-      - name: Repository 🗃️
-        uses: actions/checkout@v4
+          sed -i 's/{{VNET_SUBNET_WEBAPP_PREFIX}}/${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}/g' ./infrastructure/parameters.json
 
       - name: Deploy Azure Resources
         uses: azure/arm-deploy@v1
