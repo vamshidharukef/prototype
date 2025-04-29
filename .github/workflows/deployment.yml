@@ -45,7 +45,7 @@ jobs:
   webapp:
     name: WebApp 🌐
     needs: [setup]
-    runs-on: [ubuntu-latest]    
+    runs-on: [self-hosted]    
 
     strategy:
       max-parallel: 1
@@ -69,11 +69,16 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Get Publishing Profile
+        run: |
+          profile=$(az webapp deployment list-publishing-profiles --name ${{ matrix.webapp }} --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} --xml)
+          echo "AZURE_WEBAPP_PUBLISH_PROFILE=$profile" >> $GITHUB_ENV
+      
       - name: Deploy to WebApp ⚡
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ matrix.webapp }}
-          resource-group: rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }}
+          publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
           
 
@@ -84,7 +89,7 @@ jobs:
           inlineScript: |
             az webapp config appsettings set \
             --name ${{ matrix.webapp }} \
-            --resource-group rg-${{ env.PRODUCT }}--${{ vars.VERSION }} \
+            --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
             --settings \
             TZ='${{ vars.TIMEZONE }}' \
-            NODE_ENV='${{ vars.NODE_ENV }}'   
+            NODE_ENV='${{ vars.NODE_ENV }}   
