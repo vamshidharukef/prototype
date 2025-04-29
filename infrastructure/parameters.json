@@ -39,7 +39,7 @@
         "value": "{{VNET_SUBNET_PRIVATE_PREFIX}}"
       },
       "tags": {
-        "value": "{{TAGS}}"
+        "value": {}
     }
   }	
 }

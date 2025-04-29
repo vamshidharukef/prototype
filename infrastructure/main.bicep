@@ -17,7 +17,7 @@ param location string = resourceGroup().location
 param sku string = 'B1'
 
 @description('Common tags for all resources')
-param tags object
+param tags object = {}
 
 @description('Log Analytics Workspace quota')
 param logQuota int
