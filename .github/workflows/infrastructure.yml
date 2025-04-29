@@ -32,7 +32,6 @@ jobs:
 
       - name: Set Tags 🏷️
         run: |
-          run: |
           TAGS_JSON=$(jq -n \
             --arg env "dev" \
             --arg product "${{ env.PRODUCT }}" \
@@ -86,7 +85,7 @@ jobs:
           resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
           template: ./infrastructure/main.bicep
           parameters: ./infrastructure/parameters.json
-          scope: resourceGroup                                              
+          scope: resourcegroup                                        
   
 
       
