@@ -30,10 +30,9 @@ jobs:
       - name: Timezone 🌐
         run: echo "Timezone set to ${{ env.TIMEZONE }}"
 
-      - name: Tags 🏷️
-        run: echo TAGS='Environment=dev' \
-          'Product=${{ env.PRODUCT }}' \
-          'Team=development' >> $GITHUB_ENV  
+      - name: Set Tags 🏷️
+        run: |
+         echo "TAGS={\"Environment\":\"dev\",\"Product\":\"${{ env.PRODUCT }}\",\"Team\":\"development\"}" >> $GITHUB_ENV 
 
       - name: Login 🔐
         uses: azure/login@v2
@@ -71,6 +70,7 @@ jobs:
           sed -i 's/{{VNET_ADDRESS_PREFIX}}/${{ vars.VNET_ADDRESS_PREFIX }}/g' ./infrastructure/parameters.json
           sed -i 's/{{VNET_SUBNET_PRIVATE_PREFIX}}/${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}/g' ./infrastructure/parameters.json
           sed -i 's/{{VNET_SUBNET_WEBAPP_PREFIX}}/${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}/g' ./infrastructure/parameters.json
+          sed -i 's/{{TAGS}}/${{ env.TAGS }}/g' ./infrastructure/parameters.json
 
       - name: Deploy Azure Resources
         uses: azure/arm-deploy@v1
