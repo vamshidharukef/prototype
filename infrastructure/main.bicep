@@ -16,7 +16,70 @@ param location string = resourceGroup().location
 @description('The SKU of App Service Plan.')
 param sku string = 'B1'
 
+@description('Common tags for all resources')
+param tags object
+
+@description('Log Analytics Workspace quota')
+param logQuota int
+
+@description('Log Analytics Workspace retention time in days')
+param logRetentionDays int
+
+@description('Log Analytics Workspace SKU (e.g., PerGB2018)')
+param logPlan string
+
+@description('VNet address prefix (e.g., 10.0.0.0/16)')
+param vnetAddressPrefix string
+
+@description('WebApp Subnet address prefix (e.g., 10.0.1.0/24)')
+param vnetSubnetWebappPrefix string
+
+@description('Private Endpoint Subnet address prefix (e.g., 10.0.2.0/24)')
+param vnetSubnetPrivatePrefix string
+
 var frontDoorSkuName = 'Premium_AzureFrontDoor'
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
+  name: 'logAnalyticsWorkspace-${webAppName}'
+  location: location
+  sku: {
+    name: logPlan
+  }
+  properties: {
+    retentionInDays: logRetentionDays
+    workspaceCapping: {
+      dailyQuotaGb: logQuota
+    }
+  }
+  tags: tags
+}
+
+resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+  name: 'vnet-${webAppName}'
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        vnetAddressPrefix
+      ]
+    }
+    subnets: [
+      {
+        name: 'subnetWebappName'
+        properties: {
+          addressPrefix: vnetSubnetWebappPrefix
+        }
+      }
+      {
+        name: 'subnetPrivateEndpoint'
+        properties: {
+          addressPrefix: vnetSubnetPrivatePrefix
+        }
+      }
+    ]
+  }
+  tags: tags
+}
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: appServicePlanName
