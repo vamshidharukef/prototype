@@ -72,7 +72,7 @@ jobs:
       - name: Get Publishing Profile
         shell: pwsh
         run: |
-          $profile = az webapp deployment list-publishing-profiles --name ${{ matrix.webapp }} --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} --xml
+          $profile = az webapp deployment list-publishing-profiles --name ${{ matrix.webapp }} --resource-group rg-${{ env.PRODUCT }}--${{ vars.VERSION }} --xml
           $profile = $profile -replace "`n",""
           $profile = $profile -replace "`r",""
           $profile = $profile -replace "'",""
@@ -93,7 +93,7 @@ jobs:
           inlineScript: |
             az webapp config appsettings set \
             --name ${{ matrix.webapp }} \
-            --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} \
+            --resource-group rg-${{ env.PRODUCT }}--${{ vars.VERSION }} \
             --settings \
             TZ='${{ vars.TIMEZONE }}' \
             NODE_ENV='${{ vars.NODE_ENV }}   
