@@ -15,10 +15,28 @@
         "value": "prototypewaf"
       },
       "location": {
-        "value": "uksouth"
+        "value": "{{LOCATION}}"
       },
       "sku": {
         "value": "B1"
+      },
+      "logPlan": {
+        "value": "{{LOG_PLAN}}"
+      },
+      "logQuota": {
+        "value": "{{LOG_QUOTA}}"
+      },
+      "logRetentionDays": {
+        "value": "{{LOG_RETENTION_DAYS}}"
+      },
+      "vnetAddressPrefix": {
+        "value": "{{VNET_ADDRESS_PREFIX}}"
+      },
+      "vnetSubnetWebappPrefix": {
+        "value": "{{VNET_SUBNET_WEBAPP_PREFIX}}"
+      },
+      "vnetSubnetPrivatePrefix": {
+        "value": "{{VNET_SUBNET_PRIVATE_PREFIX}}"
       }
     }
   }	
