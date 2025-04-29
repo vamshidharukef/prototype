@@ -37,8 +37,10 @@ jobs:
             --arg product "${{ env.PRODUCT }}" \
             --arg team "development" \
             '{Environment: $env, Product: $product, Team: $team}')
-          TAGS_ESCAPED=$(echo "$TAGS_JSON" | sed 's/"/\\"/g')
-          echo "TAGS=$TAGS_ESCAPED" >> $GITHUB_ENV 
+          TAGS_ESCAPED=$(echo $TAGS_JSON | jq -c . | sed 's/"/\\"/g')
+          echo "TAGS_JSON=$TAGS_ESCAPED" >> $GITHUB_ENV
+          TAGS_CLI=$(echo $TAGS_JSON | jq -r 'to_entries | map("\(.key)=\(.value)") | join(" ")')
+          echo "TAGS_CLI=$TAGS_CLI" >> $GITHUB_ENV
 
       - name: Login 🔐
         uses: azure/login@v2
@@ -61,7 +63,7 @@ jobs:
             --location ${{ vars.REGION }} \
             --resource-group rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
             --name rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }} \
-            --tags ${{ env.TAGS }} 
+            --tags ${{ env.TAGS_CLI }} \
             
       - name: Set Resource Group Name
         run: echo "RESOURCE_GROUP_NAME=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}" >> $GITHUB_ENV
@@ -76,7 +78,7 @@ jobs:
           sed -i "s|{{VNET_ADDRESS_PREFIX}}|${{ vars.VNET_ADDRESS_PREFIX }}|g" ./infrastructure/parameters.json
           sed -i "s|{{VNET_SUBNET_PRIVATE_PREFIX}}|${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}|g" ./infrastructure/parameters.json
           sed -i "s|{{VNET_SUBNET_WEBAPP_PREFIX}}|${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}|g" ./infrastructure/parameters.json
-          sed -i "s|{{TAGS}}|${{ env.TAGS }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{TAGS}}|${{ env.TAGS_JSON }}|g" ./infrastructure/parameters.json
 
       - name: Deploy Azure Resources
         uses: azure/arm-deploy@v1
