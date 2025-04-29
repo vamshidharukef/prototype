@@ -39,13 +39,13 @@ param vnetSubnetPrivatePrefix string
 
 var frontDoorSkuName = 'Premium_AzureFrontDoor'
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: 'logAnalyticsWorkspace-${webAppName}'
   location: location
-  sku: {
-    name: logPlan
-  }
   properties: {
+    sku: {
+      name: logPlan
+    }
     retentionInDays: logRetentionDays
     workspaceCapping: {
       dailyQuotaGb: logQuota
