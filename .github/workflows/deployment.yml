@@ -63,11 +63,6 @@ jobs:
       - name: Repository 🗂️🌎
         uses: actions/checkout@v4
 
-      - name: Update Azure CLI
-        shell: pwsh
-        run: |
-          az upgrade --yes
-      
       - name: Login to Azure 🔐
         uses: azure/login@v1
         with:
