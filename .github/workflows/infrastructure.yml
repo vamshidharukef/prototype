@@ -61,8 +61,8 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
           template: ./infrastructure/main.bicep
+          parametersFile: ./infrastructure/parameters.json
           parameters: |
-            ./infrastructure/parameters.json
             logPlan=${{ vars.LOG_PLAN }}
             location=${{ vars.REGION }}
             logQuota=${{ vars.LOG_QUOTA }}
