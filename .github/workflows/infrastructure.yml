@@ -56,24 +56,20 @@ jobs:
         run: echo "RESOURCE_GROUP_NAME=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}" >> $GITHUB_ENV
 
       - name: Deploy Azure Resources
-        uses: azure/arm-deploy@v1
+        uses: azure/arm-deploy@v2
         with:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
           template: ./infrastructure/main.bicep
+          parameterFile: ./infrastructure/parameters.json
           parameters: |
-            webAppName=${{ vars.WEBAPPNAME }}
-            appServicePlanName=${{ vars.APPSERVICEPLANNAME }}
-            frontDoorName=${{ vars.FRONTDOORNAME }}
-            wafPolicyName=${{ vars.WAFPOLICYNAME }}
-            sku=${{ vars.SKU }}
-            logPlan=${{ vars.LOGPLAN }}
-            location=${{ vars.LOCATION }}
-            logQuota=${{ vars.LOGQUOTA }}
-            logRetentionDays=${{ vars.LOGRETENTIONDAYS }}
-            vnetAddressPrefix=${{ vars.VNETADDRESSPREFIX }}
-            vnetSubnetPrivatePrefix=${{ vars.VNETSUBNETPRIVATEPREFIX }}
-            vnetSubnetWebappPrefix=${{ vars.VNETSUBNETWEBAPPPREFIX }}            
+            {{LOG_PLAN}}=${{ vars.LOGPLAN }}
+            {{LOCATION}}=${{ vars.REGION }}
+            {{LOG_QUOTA}}=${{ vars.LOG_QUOTA }}
+            {{LOG_RETENTION_DAYS}}=${{ vars.LOG_RETENTION_DAY }}
+            {{VNET_ADDRESS_PREFIX}}=${{ vars.VNET_ADDRESS_PREFIX }}
+            {{VNET_SUBNET_WEBAPP_PREFIX}}=${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}
+            {{VNET_SUBNET_PRIVATE_PREFIX}}=${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}            
           scope: resourcegroup                                       
   
 

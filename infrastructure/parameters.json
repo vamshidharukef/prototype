@@ -14,6 +14,9 @@
       "wafPolicyName": {
         "value": "prototypewaf"
       },
+      "location": {
+        "value": "{{LOCATION}}"
+      },
       "sku": {
         "value": "B1"
       },
