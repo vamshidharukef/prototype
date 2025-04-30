@@ -151,7 +151,7 @@ resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' =
 }
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.azurewebsites.net'
+  name: '${webAppName}.azurewebsites.net'
   location: 'global'
 }
 
