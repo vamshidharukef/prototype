@@ -62,11 +62,11 @@ jobs:
           resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
           template: ./infrastructure/main.bicep
           parameters: |
-            webAppName=${{ secrets.WEBAPPNAME }}
-            appServicePlanName=${{ secrets.APPSERVICEPLANNAME }}
-            frontDoorName=${{ secrets.FRONTDOORNAME }}
-            wafPolicyName=${{ secrets.WAFPOLICYNAME }}
-            sku=${{ secrets.SKU }}
+            webAppName=${{ vars.WEBAPPNAME }}
+            appServicePlanName=${{ vars.APPSERVICEPLANNAME }}
+            frontDoorName=${{ vars.FRONTDOORNAME }}
+            wafPolicyName=${{ vars.WAFPOLICYNAME }}
+            sku=${{ vars.SKU }}
             logPlan=${{ vars.LOGPLAN }}
             location=${{ vars.LOCATION }}
             logQuota=${{ vars.LOGQUOTA }}
