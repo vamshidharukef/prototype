@@ -55,21 +55,24 @@ jobs:
       - name: Set Resource Group Name
         run: echo "RESOURCE_GROUP_NAME=rg-${{ env.PRODUCT }}-${{ env.TARGET }}-${{ vars.VERSION }}" >> $GITHUB_ENV
 
+      - name: Replace GitHub variables into parameters.json
+        run: | 
+          # Replace GitHub variables into parameters.json
+          sed -i "s|{{LOG_PLAN}}|${{ vars.LOG_PLAN }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{LOCATION}}|${{ vars.REGION }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{LOG_QUOTA}}|${{ vars.LOG_QUOTA }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{LOG_RETENTION_DAYS}}|${{ vars.LOG_RETENTION_DAY }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{VNET_ADDRESS_PREFIX}}|${{ vars.VNET_ADDRESS_PREFIX }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{VNET_SUBNET_PRIVATE_PREFIX}}|${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{VNET_SUBNET_WEBAPP_PREFIX}}|${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}|g" ./infrastructure/parameters.json
+          
       - name: Deploy Azure Resources
         uses: azure/arm-deploy@v2
         with:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
           template: ./infrastructure/main.bicep
-          parameterFile: ./infrastructure/parameters.json
-          parameters: |
-            {{logPlan}}=${{ vars.LOGPLAN }}
-            {{location}}=${{ vars.REGION }}
-            {{logQuota}}=${{ vars.LOG_QUOTA }}
-            {{logRetentionDays}}=${{ vars.LOG_RETENTION_DAY }}
-            {{vnetAddressPrefix}}=${{ vars.VNET_ADDRESS_PREFIX }}
-            {{vnetSubnetPrivatePrefix}}=${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}
-            {{vnetSubnetWebappPrefix}}=${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}            
+          parameters: ./infrastructure/parameters.json          
           scope: resourcegroup                                       
   
 
