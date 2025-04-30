@@ -63,15 +63,14 @@ jobs:
           template: ./infrastructure/main.bicep
           parameters: |
             ./infrastructure/parameters.json
-            LOG_PLAN=${{ vars.LOG_PLAN }}
-            LOCATION=${{ vars.REGION }}
-            LOG_QUOTA=${{ vars.LOG_QUOTA }}
-            LOG_RETENTION_DAYS=${{ vars.LOG_RETENTION_DAY }}
-            VNET_ADDRESS_PREFIX=${{ vars.VNET_ADDRESS_PREFIX }}
-            VNET_SUBNET_PRIVATE_PREFIX=${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}
-            VNET_SUBNET_WEBAPP_PREFIX=${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}
-            TAGS=${{ env.TAGS_JSON }}
-          scope: resourcegroup                                        
+            logPlan=${{ vars.LOG_PLAN }}
+            location=${{ vars.REGION }}
+            logQuota=${{ vars.LOG_QUOTA }}
+            logRetentionDays=${{ vars.LOG_RETENTION_DAY }}
+            vnetAddressPrefix=${{ vars.VNET_ADDRESS_PREFIX }}
+            vnetSubnetPrivatePrefix=${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}
+            vnetSubnetWebappPrefix=${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}            
+          scope: resourcegroup                                       
   
 
       
