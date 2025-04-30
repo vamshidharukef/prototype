@@ -62,7 +62,7 @@ jobs:
           resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
           template: ./infrastructure/main.bicep
           parameters: |
-            webappName=${{ secrets.AZURE_WEBAPP_NAME }}
+            webAppName=${{ secrets.AZURE_WEBAPP_NAME }}
             appServicePlanName=${{ secrets.APP_SERVICE_PLAN_NAME }}
             frontDoorName=${{ secrets.AZURE_FRONTDOOR_NAME }}
             wafPolicyName=${{ secrets.WAF_POLICY_NAME }}
