@@ -61,8 +61,12 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
           template: ./infrastructure/main.bicep
-          parametersFile: ./infrastructure/parameters.json
           parameters: |
+            webappName=${{ secrets.AZURE_WEBAPP_NAME }}
+            appServicePlanName=${{ secrets.APP_SERVICE_PLAN_NAME }}
+            frontDoorName=${{ secrets.AZURE_FRONTDOOR_NAME }}
+            wafPolicyName=${{ secrets.WAF_POLICY_NAME }}
+            sku=${{ secrets.SKU }}
             logPlan=${{ vars.LOG_PLAN }}
             location=${{ vars.REGION }}
             logQuota=${{ vars.LOG_QUOTA }}
