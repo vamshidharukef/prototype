@@ -221,7 +221,7 @@ resource frontDoorOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01
   name: '${frontDoorName}-origin'
   parent: frontDoorOriginGroup
   properties: {
-    hostName: webApp.properties.defaultHostName
+    hostName: '${webAppName}.privatelink.azurefd.net'
     httpPort: 80
     httpsPort: 443
     originHostHeader: webApp.properties.defaultHostName
