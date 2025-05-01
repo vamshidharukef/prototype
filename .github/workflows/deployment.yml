@@ -45,7 +45,7 @@ jobs:
   webapp:
     name: WebApp 🌐
     needs: [setup]
-    runs-on: [self-hosted, Windows, x64]    
+    runs-on: [ubuntu-latest]    
 
     strategy:
       max-parallel: 1
