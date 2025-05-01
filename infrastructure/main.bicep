@@ -209,10 +209,10 @@ resource frontDoorOriginGroup 'Microsoft.Cdn/profiles/originGroups@2021-06-01' =
       successfulSamplesRequired: 3
     }
     healthProbeSettings: {
-      probePath: '/'
-      probeRequestType: 'HEAD'
-      probeProtocol: 'Http'
-      probeIntervalInSeconds: 100
+      probePath: '/health'
+      probeRequestType: 'GET'
+      probeProtocol: 'Https'
+      probeIntervalInSeconds: 60
     }
   }
 }
