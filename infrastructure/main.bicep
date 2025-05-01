@@ -116,7 +116,8 @@ resource webApp 'Microsoft.Web/sites@2021-03-01' = {
       linuxFxVersion: 'NODE|14-lts'
       alwaysOn: true
       vnetRouteAllEnabled: false
-    }    
+    }
+    virtualNetworkSubnetId: webAppVnet.properties.subnets[0].id
   }
 }
 
@@ -208,10 +209,10 @@ resource frontDoorOriginGroup 'Microsoft.Cdn/profiles/originGroups@2021-06-01' =
       successfulSamplesRequired: 3
     }
     healthProbeSettings: {
-      probePath: '/health'
-      probeRequestType: 'GET'
-      probeProtocol: 'Https'
-      probeIntervalInSeconds: 60
+      probePath: '/'
+      probeRequestType: 'HEAD'
+      probeProtocol: 'Http'
+      probeIntervalInSeconds: 100
     }
   }
 }
