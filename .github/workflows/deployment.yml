@@ -91,7 +91,7 @@ jobs:
         run: |
           az webapp config appsettings set `
             --name ${{ matrix.webapp }} `
-            --resource-group rg-${{ env.PRODUCT }}-${{ env.ENVIRONMENT }}-${{ vars.VERSION }} `
+            --resource-group rg-${{ env.PRODUCT }}--${{ vars.VERSION }} `
             --settings `
             TZ='${{ vars.TIMEZONE }}' `
             NODE_ENV='${{ vars.NODE_ENV }}'
