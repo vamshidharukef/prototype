@@ -116,8 +116,7 @@ resource webApp 'Microsoft.Web/sites@2021-03-01' = {
       linuxFxVersion: 'NODE|14-lts'
       alwaysOn: true
       vnetRouteAllEnabled: false
-    }
-    virtualNetworkSubnetId: webAppVnet.properties.subnets[0].id
+    }    
   }
 }
 
