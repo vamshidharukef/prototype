@@ -58,13 +58,13 @@ jobs:
       - name: Replace GitHub variables into parameters.json
         run: | 
           # Replace GitHub variables into parameters.json
-          sed -i "s|{{LOG_PLAN}}|${{vars.LOG_PLAN}}|g" ./infrastructure/parameters.json
+          sed -i "s|{{LOG_PLAN}}|${{secrets.LOG_PLAN}}|g" ./infrastructure/parameters.json
           sed -i "s|{{LOCATION}}|${{ secrets.LOCATION }}|g" ./infrastructure/parameters.json
-          sed -i "s|{{LOG_QUOTA}}|${{ vars.LOG_QUOTA }}|g" ./infrastructure/parameters.json
-          sed -i "s|{{LOG_RETENTION_DAYS}}|${{ vars.LOG_RETENTION_DAY }}|g" ./infrastructure/parameters.json
-          sed -i "s|{{VNET_ADDRESS_PREFIX}}|${{ vars.VNET_ADDRESS_PREFIX }}|g" ./infrastructure/parameters.json
-          sed -i "s|{{VNET_SUBNET_PRIVATE_PREFIX}}|${{ vars.VNET_SUBNET_PRIVATE_PREFIX }}|g" ./infrastructure/parameters.json
-          sed -i "s|{{VNET_SUBNET_WEBAPP_PREFIX}}|${{ vars.VNET_SUBNET_WEBAPP_PREFIX }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{LOG_QUOTA}}|${{ secrets.LOG_QUOTA }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{LOG_RETENTION_DAYS}}|${{ secrets.LOG_RETENTION_DAY }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{VNET_ADDRESS_PREFIX}}|${{ secrets.VNET_ADDRESS_PREFIX }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{VNET_SUBNET_PRIVATE_PREFIX}}|${{ secrets.VNET_SUBNET_PRIVATE_PREFIX }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{VNET_SUBNET_WEBAPP_PREFIX}}|${{ secrets.VNET_SUBNET_WEBAPP_PREFIX }}|g" ./infrastructure/parameters.json
           
       - name: Deploy Azure Resources
         uses: azure/arm-deploy@v2
