@@ -9,11 +9,6 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
-  push:
-    branches:
-      # Manual deployment
-      - main      
-
 env:
   PRODUCT: prototype
   ENVIRONMENT: ${{ github.ref_name }}
