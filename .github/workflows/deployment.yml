@@ -76,7 +76,6 @@ jobs:
           $profile = $profile -replace "`r",""
           $profile = $profile -replace "'",""
           Write-Output "::add-mask::$profile"
-          "$env:GITHUB_ENV" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           Add-Content -Path $env:GITHUB_ENV -Value "AZURE_WEBAPP_PUBLISH_PROFILE=$profile"
 
       
