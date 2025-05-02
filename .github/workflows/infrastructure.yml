@@ -59,7 +59,7 @@ jobs:
         run: | 
           # Replace GitHub variables into parameters.json
           sed -i "s|{{LOG_PLAN}}|${{vars.LOG_PLAN}}|g" ./infrastructure/parameters.json
-          sed -i "s|{{LOCATION}}|${{ vars.REGION }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{LOCATION}}|${{ secrets.LOCATION }}|g" ./infrastructure/parameters.json
           sed -i "s|{{LOG_QUOTA}}|${{ vars.LOG_QUOTA }}|g" ./infrastructure/parameters.json
           sed -i "s|{{LOG_RETENTION_DAYS}}|${{ vars.LOG_RETENTION_DAY }}|g" ./infrastructure/parameters.json
           sed -i "s|{{VNET_ADDRESS_PREFIX}}|${{ vars.VNET_ADDRESS_PREFIX }}|g" ./infrastructure/parameters.json
