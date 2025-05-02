@@ -96,7 +96,7 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
 }
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
-  name: appServicePlanName
+  name: 'appServicePlanName-${webAppName}'
   location: location
   sku: {
     name: sku
@@ -108,7 +108,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
 }
 
 resource webApp 'Microsoft.Web/sites@2021-03-01' = {
-  name: webAppName
+  name: 'webAppName-${webAppName}'
   location: location
   properties: {
     serverFarmId: appServicePlan.id
@@ -120,7 +120,7 @@ resource webApp 'Microsoft.Web/sites@2021-03-01' = {
 }
 
 resource frontDoorProfile 'Microsoft.Cdn/profiles@2021-06-01' = {
-  name: frontDoorName
+  name: 'frontDoorName-${frontDoorName}'
   location: 'global'
   sku: {
     name: frontDoorSkuName
@@ -190,7 +190,7 @@ resource frontDoorRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' 
 }
 
 resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2024-02-01' = {
-  name: wafPolicyName
+  name: 'wafPolicyName-${wafPolicyName}'
   location: 'global'
   sku: {
     name: frontDoorSkuName
