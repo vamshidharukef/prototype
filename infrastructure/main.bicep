@@ -1,9 +1,6 @@
 @description('The name of the web app that you wish to create.')
 param webAppName string
 
-@description('The name of the App Service plan.')
-param appServicePlanName string
-
 @description('The name of the Front Door profile.')
 param frontDoorName string
 
