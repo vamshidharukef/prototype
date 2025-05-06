@@ -62,32 +62,31 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       addressPrefixes: [
         vnetAddressPrefix
       ]
-      privateEndpointNetworkPolicies: 'Disabled'
-      subnets: [
-        {
-          name: 'subnet-webapp'
-          properties: {
-            addressPrefix: vnetSubnetWebappPrefix
-            privateEndpointNetworkPolicies: 'Disabled'
-            serviceEndpoints: [
-              {
-                service: 'Microsoft.Web'
-                locations: [
-                  location
-                ]
-              }
-            ]
-          }
+    }
+    subnets: [
+      {
+        name: 'subnet-webapp'
+        properties: {
+          addressPrefix: vnetSubnetWebappPrefix
+          privateEndpointNetworkPolicies: 'Disabled'
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.Web'
+              locations: [
+                location
+              ]
+            }
+          ]
         }
-        {
-          name: 'subnet-privateendpoint'
-          properties: {
-            addressPrefix: vnetSubnetPrivatePrefix
-            privateEndpointNetworkPolicies: 'Disabled'
-          }
+      }
+      {
+        name: 'subnet-privateendpoint'
+        properties: {
+          addressPrefix: vnetSubnetPrivatePrefix
+          privateEndpointNetworkPolicies: 'Disabled'
         }
-      ]
-    }    
+      }
+    ]
   }
   tags: tags
 }
@@ -279,26 +278,16 @@ resource frontDoorOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01
         id: webApp.id
       }
       groupId: 'webapp'
-      privateLinkLocation: 'location'
       requestMessage: 'Please approve the private link connection.'
     }
     enforceCertificateNameCheck: true
-  }
-  dependsOn: [
-    webAppVnet
-    webApp
-  ]
+  }  
 }
 
 resource frontDoorRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' = {
   name: '${frontDoorName}-route'
   parent: frontDoorEndpoint  
   properties: {
-    customDomains: [
-      {
-        id: frontDoorEndpoint.id
-      }
-    ]
     originGroup: {
       id: frontDoorOriginGroup.id
     }
