@@ -92,47 +92,6 @@ resource webApp 'Microsoft.Web/sites@2021-03-01' = {
   }
 }
 
-resource webAppVnetIntegration 'Microsoft.Web/sites/networkConfig@2021-03-01' = {
-  parent: webApp
-  name: 'virtualNetwork'  
-}
-
-resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
-  name: '${webAppName}-pe'
-  location: location  
-}
-
-resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.azurewebsites.net'
-  location: 'global'
-}
-
-resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  parent: privateDnsZone
-  name: '${webAppName}-vnetlink'
-  location: 'global'
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: webAppVnet.id
-    }
-  }
-}
-
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
-  parent: webAppPrivateEndpoint
-  name: 'default'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'config1'
-        properties: {
-          privateDnsZoneId: privateDnsZone.id
-        }
-      }
-    ]
-  }
-}
 
 // Access Restrictions to allow traffic from VNet
 resource accessRestriction 'Microsoft.Web/sites/config@2021-02-01' = {
