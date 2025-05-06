@@ -31,12 +31,6 @@ param logPlan string
 @description('VNet address prefix (e.g., 10.0.0.0/16)')
 param vnetAddressPrefix string
 
-@description('WebApp Subnet address prefix (e.g., 10.0.1.0/24)')
-param vnetSubnetWebappPrefix string
-
-@description('Private Endpoint Subnet address prefix (e.g., 10.0.2.0/24)')
-param vnetSubnetPrivatePrefix string
-
 var frontDoorSkuName = 'Premium_AzureFrontDoor'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
@@ -86,29 +80,12 @@ resource webApp 'Microsoft.Web/sites@2021-03-01' = {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'NODE|14-lts'
-      alwaysOn: true
-      vnetRouteAllEnabled: true     
+      alwaysOn: true           
     }     
   }
 }
 
 
-// Access Restrictions to allow traffic from VNet
-resource accessRestriction 'Microsoft.Web/sites/config@2021-02-01' = {
-  parent: webApp
-  name: 'web'
-  properties: {
-    ipSecurityRestrictions: [
-      {
-        name: 'AllowVNet'
-        priority: 100
-        action: 'Allow'
-        ipAddress: vnetAddressPrefix
-        tag: 'Default'        
-      }
-    ]
-  }
-}
 
 resource frontDoorProfile 'Microsoft.Cdn/profiles@2021-06-01' = {
   name: frontDoorName
