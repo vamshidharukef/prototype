@@ -114,8 +114,89 @@ resource webApp 'Microsoft.Web/sites@2021-03-01' = {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'NODE|14-lts'
-      alwaysOn: true      
-    }    
+      alwaysOn: true
+      vnetRouteAllEnabled: true     
+    }   
+    virtualNetworkSubnetId: webAppVnet.properties.subnets[0].id 
+  }
+}
+
+resource webAppVnetIntegration 'Microsoft.Web/sites/networkConfig@2021-03-01' = {
+  parent: webApp
+  name: 'virtualNetwork'
+  properties: {
+    subnetResourceId: webAppVnet.properties.subnets[0].id
+  }
+}
+
+resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
+  name: '${webAppName}-pe'
+  location: location
+  properties: {
+    subnet: {
+      id: webAppVnet.properties.subnets[1].id 
+    }
+    privateLinkServiceConnections: [
+      {
+        name: '${webAppName}-plsc'
+        properties: {
+          privateLinkServiceId: webApp.id
+          groupIds: [
+            'sites'
+          ]
+        }
+      }
+    ]
+  }
+}
+
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: 'privatelink.azurewebsites.net'
+  location: 'global'
+}
+
+resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  parent: privateDnsZone
+  name: '${webAppName}-vnetlink'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: webAppVnet.id
+    }
+  }
+}
+
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
+  parent: webAppPrivateEndpoint
+  name: 'default'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'config1'
+        properties: {
+          privateDnsZoneId: privateDnsZone.id
+        }
+      }
+    ]
+  }
+}
+
+// Access Restrictions to allow traffic from VNet
+resource accessRestriction 'Microsoft.Web/sites/config@2021-02-01' = {
+  parent: webApp
+  name: 'web'
+  properties: {
+    ipSecurityRestrictions: [
+      {
+        name: 'AllowVNet'
+        priority: 100
+        action: 'Allow'
+        ipAddress: vnetAddressPrefix
+        tag: 'Default'
+        vnetSubnetResourceId: webAppVnet.properties.subnets[0].id
+      }
+    ]
   }
 }
 
