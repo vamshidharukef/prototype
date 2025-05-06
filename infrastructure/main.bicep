@@ -112,10 +112,7 @@ resource virtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetwork
         vnetAddressPrefix
       ]
     }
-  }
-  dependsOn: [
-    webAppVnet
-  ]
+  }  
 }]
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
@@ -273,13 +270,6 @@ resource frontDoorOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01
     priority: 1
     weight: 1000
     enabledState: 'Enabled'
-    sharedPrivateLinkResource: {
-      privateLink: {
-        id: webApp.id
-      }
-      groupId: 'webapp'
-      requestMessage: 'Please approve the private link connection.'
-    }
     enforceCertificateNameCheck: true
   }  
 }
