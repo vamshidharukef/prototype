@@ -31,6 +31,12 @@ param logPlan string
 @description('VNet address prefix (e.g., 10.0.0.0/16)')
 param vnetAddressPrefix string
 
+@description('WebApp Subnet address prefix (e.g., 10.0.1.0/24)')
+param vnetSubnetWebappPrefix string
+
+@description('Private Endpoint Subnet address prefix (e.g., 10.0.2.0/24)')
+param vnetSubnetPrivatePrefix string
+
 var frontDoorSkuName = 'Premium_AzureFrontDoor'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
