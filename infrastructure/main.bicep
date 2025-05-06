@@ -62,35 +62,7 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       addressPrefixes: [
         vnetAddressPrefix
       ]
-    }
-    subnets: [
-      {
-        name: 'snet-webapp'
-        properties: {
-          addressPrefix: vnetSubnetWebappPrefix
-          delegations: [
-            {
-              name: 'delegation'
-              properties: {
-                serviceName: 'Microsoft.Web/serverFarms'
-              }
-            }
-          ]
-          serviceEndpoints: [
-            {
-              service: 'Microsoft.Web'
-            }
-          ]
-        }
-      }
-      {
-        name: 'snet-privateendpoint'
-        properties: {
-          addressPrefix: vnetSubnetPrivatePrefix
-          privateEndpointNetworkPolicies: 'Disabled'
-        }
-      }
-    ]
+    }    
   }
   tags: tags
 }
@@ -116,38 +88,18 @@ resource webApp 'Microsoft.Web/sites@2021-03-01' = {
       linuxFxVersion: 'NODE|14-lts'
       alwaysOn: true
       vnetRouteAllEnabled: true     
-    }   
-    virtualNetworkSubnetId: webAppVnet.properties.subnets[0].id 
+    }     
   }
 }
 
 resource webAppVnetIntegration 'Microsoft.Web/sites/networkConfig@2021-03-01' = {
   parent: webApp
-  name: 'virtualNetwork'
-  properties: {
-    subnetResourceId: webAppVnet.properties.subnets[0].id
-  }
+  name: 'virtualNetwork'  
 }
 
 resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
   name: '${webAppName}-pe'
-  location: location
-  properties: {
-    subnet: {
-      id: webAppVnet.properties.subnets[1].id 
-    }
-    privateLinkServiceConnections: [
-      {
-        name: '${webAppName}-plsc'
-        properties: {
-          privateLinkServiceId: webApp.id
-          groupIds: [
-            'sites'
-          ]
-        }
-      }
-    ]
-  }
+  location: location  
 }
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
