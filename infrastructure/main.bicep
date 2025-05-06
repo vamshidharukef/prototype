@@ -193,8 +193,7 @@ resource accessRestriction 'Microsoft.Web/sites/config@2021-02-01' = {
         priority: 100
         action: 'Allow'
         ipAddress: vnetAddressPrefix
-        tag: 'Default'
-        vnetSubnetResourceId: webAppVnet.properties.subnets[0].id
+        tag: 'Default'        
       }
     ]
   }
