@@ -62,10 +62,62 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       addressPrefixes: [
         vnetAddressPrefix
       ]
+      privateEndpointNetworkPolicies: 'Disabled'
+      subnets: [
+        {
+          name: 'subnet-webapp'
+          properties: {
+            addressPrefix: vnetSubnetWebappPrefix
+            privateEndpointNetworkPolicies: 'Disabled'
+            serviceEndpoints: [
+              {
+                service: 'Microsoft.Web'
+                locations: [
+                  location
+                ]
+              }
+            ]
+          }
+        }
+        {
+          name: 'subnet-privateendpoint'
+          properties: {
+            addressPrefix: vnetSubnetPrivatePrefix
+            privateEndpointNetworkPolicies: 'Disabled'
+          }
+        }
+      ]
     }    
   }
   tags: tags
 }
+
+resource virtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-05-01' = [for i in range(0, 1): {
+  name: 'vnet-peering-${i}'
+  parent: webAppVnet
+  properties: {
+    remoteVirtualNetwork: {
+      id: webAppVnet.id
+    }
+    allowVirtualNetworkAccess: true
+    allowForwardedTraffic: true
+    allowGatewayTransit: false
+    useRemoteGateways: false
+    remoteAddressSpace: {
+      addressPrefixes: [
+        vnetAddressPrefix
+      ]
+    }
+    remoteVirtualNetworkAddressSpace: {
+      addressPrefixes: [
+        vnetAddressPrefix
+      ]
+    }
+  }
+  dependsOn: [
+    webAppVnet
+  ]
+}]
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: appServicePlanName
@@ -86,8 +138,92 @@ resource webApp 'Microsoft.Web/sites@2021-03-01' = {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'NODE|14-lts'
-      alwaysOn: true           
+      alwaysOn: true
+      vnetRouteAllEnabled: true
+      vnetName: webAppVnet.name
+      ipSecurityRestrictions: [
+        {
+          ipAddress: 'Any'
+          action: 'Allow'
+          priority: 2147483647
+          name: 'Allow all'
+          description: 'Allow all access'
+        }
+      ]       
     }     
+  }
+}
+
+resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
+  name: '${webAppName}-pe'
+  location: location
+  properties: {
+    subnet: {
+      id: webAppVnet.properties.subnets[1].id 
+    }
+    privateLinkServiceConnections: [
+      {
+        name: '${webAppName}-plsc'
+        properties: {
+          privateLinkServiceId: webApp.id
+          groupIds: [
+            'sites'
+          ]
+        }
+      }
+    ]
+  }
+}
+
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: '${webAppName}.azurewebsites.net'
+  location: 'global'
+  properties: {}
+}
+
+resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  parent: privateDnsZone
+  name: '${webAppName}-vnetlink'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: webAppVnet.id
+    }
+  }
+}
+
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
+  parent: webAppPrivateEndpoint
+  name: 'default'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'config1'
+        properties: {
+          privateDnsZoneId: privateDnsZone.id
+        }
+      }
+    ]
+  }
+}
+
+
+// Access Restrictions to allow traffic from VNet
+resource accessRestriction 'Microsoft.Web/sites/config@2021-02-01' = {
+  parent: webApp
+  name: 'web'
+  properties: {
+    ipSecurityRestrictions: [
+      {
+        name: 'AllowVNet'
+        priority: 100
+        action: 'Allow'
+        ipAddress: vnetAddressPrefix
+        tag: 'Default'
+        vnetSubnetResourceId: webAppVnet.properties.subnets[0].id
+      }
+    ]
   }
 }
 
@@ -131,22 +267,38 @@ resource frontDoorOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01
   name: '${frontDoorName}-origin'
   parent: frontDoorOriginGroup
   properties: {
-    hostName: '${webAppName}.privatelink.azurefd.net'
+    hostName: '${webAppName}.azurefd.net'
     httpPort: 80
     httpsPort: 443
-    originHostHeader: webApp.properties.defaultHostName
+    originHostHeader: '${webAppName}.azurefd.net'
     priority: 1
     weight: 1000
+    enabledState: 'Enabled'
+    sharedPrivateLinkResource: {
+      privateLink: {
+        id: webApp.id
+      }
+      groupId: 'webapp'
+      privateLinkLocation: 'location'
+      requestMessage: 'Please approve the private link connection.'
+    }
+    enforceCertificateNameCheck: true
   }
+  dependsOn: [
+    webAppVnet
+    webApp
+  ]
 }
 
 resource frontDoorRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' = {
   name: '${frontDoorName}-route'
-  parent: frontDoorEndpoint
-  dependsOn: [
-    frontDoorOrigin
-  ]
+  parent: frontDoorEndpoint  
   properties: {
+    customDomains: [
+      {
+        id: frontDoorEndpoint.id
+      }
+    ]
     originGroup: {
       id: frontDoorOriginGroup.id
     }
@@ -161,6 +313,9 @@ resource frontDoorRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' 
     linkToDefaultDomain: 'Enabled'
     httpsRedirect: 'Enabled'
   }
+  dependsOn: [
+    frontDoorOrigin
+  ]
 }
 
 resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@2024-02-01' = {
@@ -173,6 +328,32 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
     policySettings: {
       enabledState: 'Enabled'
       mode: 'Prevention'
+    }
+    customRules: {
+      rules: [
+        {
+          name: 'AllowAll'
+          priority: 1
+          enabledState: 'Enabled'
+          ruleType: 'MatchRule'
+          rateLimitDurationInMinutes: 5
+          rateLimitThreshold: 1000
+          action: 'Allow'
+          matchConditions: [
+            {
+              matchVariable: 'RemoteAddr'
+              operator: 'IPMatch'
+              negateCondition: true
+              matchValue: [
+                'vnetAddressPrefix'
+              ]
+              transforms: []  
+              
+              
+            }
+          ]
+        }
+      ]
     }
     managedRules: {
       managedRuleSets: [
