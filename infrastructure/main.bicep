@@ -136,16 +136,7 @@ resource webApp 'Microsoft.Web/sites@2021-03-01' = {
       linuxFxVersion: 'NODE|14-lts'
       alwaysOn: true
       vnetRouteAllEnabled: true
-      vnetName: webAppVnet.name
-      ipSecurityRestrictions: [
-        {
-          ipAddress: 'Any'
-          action: 'Allow'
-          priority: 2147483647
-          name: 'Allow all'
-          description: 'Allow all access'
-        }
-      ]       
+      vnetName: webAppVnet.name           
     }     
   }
 }
