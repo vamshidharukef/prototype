@@ -273,7 +273,7 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
   properties: {
     policySettings: {
       enabledState: 'Enabled'
-      mode: 'Prevention'
+      mode: 'Detection'
     }
     customRules: {
       rules: [
