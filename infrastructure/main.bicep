@@ -273,7 +273,7 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
   properties: {
     policySettings: {
       enabledState: 'Enabled'
-      mode: 'Detection'
+      mode: 'Prevention'
     }
     customRules: {
       rules: [
@@ -289,11 +289,30 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
               operator: 'IPMatch'
               negateCondition: false
               matchValue: [
-                '*'
+                vnetAddressPrefix
               ]
               transforms: []  
               
               
+            }
+          ]
+        }
+        {
+          name: 'AllowAzureFrontDoor'
+          priority: 2
+          enabledState: 'Enabled'
+          ruleType: 'MatchRule'
+          action: 'Allow'
+          matchConditions: [
+            {
+              matchVariable: 'RequestHeaders'
+              selector: 'X-Azure-FDID'
+              operator: 'Contains'
+              negateCondition: false
+              matchValue: [
+                frontDoorProfile.properties.frontDoorId
+              ]
+              transforms: []
             }
           ]
         }
