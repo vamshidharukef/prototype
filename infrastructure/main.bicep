@@ -305,7 +305,7 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
           action: 'Allow'
           matchConditions: [
             {
-              matchVariable: 'RequestHeaders'
+              matchVariable: 'RequestHeader'
               selector: 'X-Azure-FDID'
               operator: 'Contains'
               negateCondition: false
