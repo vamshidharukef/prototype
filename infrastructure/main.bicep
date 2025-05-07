@@ -37,6 +37,9 @@ param vnetSubnetWebappPrefix string
 @description('Private Endpoint Subnet address prefix (e.g., 10.0.2.0/24)')
 param vnetSubnetPrivatePrefix string
 
+@description('Allows IP address')
+param allowIpRange string
+
 var frontDoorSkuName = 'Premium_AzureFrontDoor'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
@@ -185,6 +188,12 @@ resource accessRestriction 'Microsoft.Web/sites/config@2021-02-01' = {
         action: 'Allow'
         tag: 'Default'
         vnetSubnetResourceId: webAppVnet.properties.subnets[0].id
+      }
+      {
+        name: 'AllowAzureFrontDoor'
+        priority: 200
+        action: 'Allow'
+        ipAddress: allowIpRange        
       }
     ]
   }

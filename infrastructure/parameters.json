@@ -38,6 +38,9 @@
       "vnetSubnetPrivatePrefix": {
         "value": "{{VNET_SUBNET_PRIVATE_PREFIX}}"
       },
+      "allowIpRange": {
+        "value": "{{ALLOWED_IP_RANGES}}"
+      },
       "tags": {
         "value": {}
     }
