@@ -230,10 +230,10 @@ resource frontDoorOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01
   name: '${frontDoorName}-origin'
   parent: frontDoorOriginGroup
   properties: {
-    hostName: '${webAppName}.azurefd.net'
+    hostName: '${webAppName}.azurewebsites.net'
     httpPort: 80
     httpsPort: 443
-    originHostHeader: '${webAppName}.azurefd.net'
+    originHostHeader: '${webAppName}.azurewebsites.net'
     priority: 1
     weight: 1000
     enabledState: 'Enabled'
