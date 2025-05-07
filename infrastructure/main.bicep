@@ -289,7 +289,7 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
               operator: 'IPMatch'
               negateCondition: false
               matchValue: [
-                vnetAddressPrefix
+                '*'
               ]
               transforms: []  
               
