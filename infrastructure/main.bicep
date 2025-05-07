@@ -91,29 +91,6 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   tags: tags
 }
 
-resource virtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-05-01' = [for i in range(0, 1): {
-  name: 'vnet-peering-${i}'
-  parent: webAppVnet
-  properties: {
-    remoteVirtualNetwork: {
-      id: webAppVnet.id
-    }
-    allowVirtualNetworkAccess: true
-    allowForwardedTraffic: true
-    allowGatewayTransit: false
-    useRemoteGateways: false
-    remoteAddressSpace: {
-      addressPrefixes: [
-        vnetAddressPrefix
-      ]
-    }
-    remoteVirtualNetworkAddressSpace: {
-      addressPrefixes: [
-        vnetAddressPrefix
-      ]
-    }
-  }  
-}]
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: appServicePlanName
@@ -301,20 +278,18 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
     customRules: {
       rules: [
         {
-          name: 'AllowAll'
+          name: 'AllowVNet'
           priority: 1
           enabledState: 'Enabled'
           ruleType: 'MatchRule'
-          rateLimitDurationInMinutes: 5
-          rateLimitThreshold: 1000
           action: 'Allow'
           matchConditions: [
             {
               matchVariable: 'RemoteAddr'
               operator: 'IPMatch'
-              negateCondition: true
+              negateCondition: false
               matchValue: [
-                'vnetAddressPrefix'
+                vnetAddressPrefix
               ]
               transforms: []  
               
