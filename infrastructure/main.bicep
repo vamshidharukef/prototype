@@ -181,6 +181,7 @@ resource accessRestriction 'Microsoft.Web/sites/config@2021-02-01' = {
   parent: webApp
   name: 'web'
   properties: {
+    publicNetworkAccess: 'Enabled'
     ipSecurityRestrictions: [
       {
         name: 'AllowVNet'
