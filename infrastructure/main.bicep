@@ -177,10 +177,11 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
 
 
 // Access Restrictions to allow traffic from VNet
-resource accessRestriction 'Microsoft.Web/sites/config@2021-02-01' = {
+resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
   parent: webApp
   name: 'web'
   properties: {
+    vnetRouteAllEnabled: true
     publicNetworkAccess: 'Enabled'
     ipSecurityRestrictions: [
       {
@@ -197,6 +198,18 @@ resource accessRestriction 'Microsoft.Web/sites/config@2021-02-01' = {
         ipAddress: allowIpRange        
       }
     ]
+    ipSecurityRestrictionsDefaultAction: 'Allow'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Allow'
+    scmIpSecurityRestrictionsUseMain: false
   }
 }
 
