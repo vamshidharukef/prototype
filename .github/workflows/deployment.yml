@@ -63,23 +63,15 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Get Publishing Profile
+      - name: Deploy to WebApp ⚡
         shell: pwsh
         run: |
-          $profile = az webapp deployment list-publishing-profiles --name ${{ matrix.webapp }} --resource-group rg-${{ env.PRODUCT }}--${{ vars.VERSION }} --xml
-          $profile = $profile -replace "`n",""
-          $profile = $profile -replace "`r",""
-          $profile = $profile -replace "'",""
-          Write-Output "::add-mask::$profile"
-          Add-Content -Path $env:GITHUB_ENV -Value "AZURE_WEBAPP_PUBLISH_PROFILE=$profile"
+          Compress-Archive -Path * -DestinationPath app.zip
+          az webapp deployment source config-zip `
+          --resource-group rg-${{ env.PRODUCT }}--${{ vars.VERSION }} `
+          --name ${{ matrix.webapp }} `
+          --src app.zip
 
-      
-      - name: Deploy to WebApp ⚡
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ matrix.webapp }}
-          publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .
           
 
       - name: Configure WebApp Settings 🧱
