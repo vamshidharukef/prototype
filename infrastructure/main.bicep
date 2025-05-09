@@ -107,17 +107,16 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   }
 }
 
-resource webApp 'Microsoft.Web/sites@2021-03-01' = {
+resource webApp 'Microsoft.Web/sites@2024-04-01' = {
   name: webAppName
   location: location
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: 'NODE|14-lts'
-      alwaysOn: true
-      vnetRouteAllEnabled: true
-      vnetName: webAppVnet.name           
-    }     
+      alwaysOn: true                
+    }
+    publicNetworkAccess: 'Enabled'     
   }
 }
 
@@ -301,7 +300,7 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
     customRules: {
       rules: [
         {
-          name: 'AllowVNet'
+          name: 'AllowByIpRange'
           priority: 1
           enabledState: 'Enabled'
           ruleType: 'MatchRule'
@@ -310,32 +309,9 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
             {
               matchVariable: 'RemoteAddr'
               operator: 'IPMatch'
-              negateCondition: false
               matchValue: [
-                vnetAddressPrefix
+                allowIpRange
               ]
-              transforms: []  
-              
-              
-            }
-          ]
-        }
-        {
-          name: 'AllowAzureFrontDoor'
-          priority: 2
-          enabledState: 'Enabled'
-          ruleType: 'MatchRule'
-          action: 'Allow'
-          matchConditions: [
-            {
-              matchVariable: 'RequestHeader'
-              selector: 'X-Azure-FDID'
-              operator: 'Contains'
-              negateCondition: false
-              matchValue: [
-                frontDoorProfile.properties.frontDoorId
-              ]
-              transforms: []
             }
           ]
         }
