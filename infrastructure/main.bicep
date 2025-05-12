@@ -165,7 +165,6 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZone
   name: '${webAppName}-vnetlink'
-  location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
@@ -211,7 +210,7 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
         ipAddress: allowIpRange        
       }         
     ]
-    ipSecurityRestrictionsDefaultAction: 'Deny'
+    ipSecurityRestrictionsDefaultAction: 'Allow'
     scmIpSecurityRestrictions: [
       {
         ipAddress: 'Any'
@@ -308,7 +307,7 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
   }
   properties: {
     policySettings: {
-      enabledState: 'Enabled'
+      enabledState: 'Disabled'
       mode: 'Prevention'
     }
     customRules: {
