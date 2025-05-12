@@ -211,7 +211,7 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
         ipAddress: allowIpRange        
       }
     ]
-    ipSecurityRestrictionsDefaultAction: 'Allow'
+    ipSecurityRestrictionsDefaultAction: 'Deny'
     scmIpSecurityRestrictions: [
       {
         ipAddress: 'Any'
