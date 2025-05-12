@@ -165,6 +165,7 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZone
   name: '${webAppName}-vnetlink'
+  location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
