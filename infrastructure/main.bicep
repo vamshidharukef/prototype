@@ -40,9 +40,6 @@ param vnetSubnetPrivatePrefix string
 @description('Allows IP address')
 param allowIpRange string
 
-@description('Allows IP address')
-param allowAdditionalIP string
-
 var frontDoorSkuName = 'Premium_AzureFrontDoor'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
@@ -212,13 +209,7 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
         priority: 200
         action: 'Allow'
         ipAddress: allowIpRange        
-      }
-      {
-        name: 'AllowAdditionalIP'
-        priority: 201
-        action: 'Allow'
-        ipAddress: allowAdditionalIP        
-      }      
+      }         
     ]
     ipSecurityRestrictionsDefaultAction: 'Deny'
     scmIpSecurityRestrictions: [
@@ -375,7 +366,4 @@ resource frontDoorSecurityPolicy 'Microsoft.Cdn/profiles/securityPolicies@2021-0
       ]
     }
   }
-}
-
-output webAppHostName string = webApp.properties.defaultHostName
-output frontDoorEndpointHostName string = frontDoorEndpoint.properties.hostName		
+}		
