@@ -80,6 +80,14 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
               ]
             }
           ]
+          delegations: [
+            {
+              name: 'webappDelegation'
+              properties: {
+                serviceName: 'Microsoft.Web/serverFarms'
+              }
+            }
+          ]
         }
       }
       {
