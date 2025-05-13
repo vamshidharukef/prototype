@@ -1,3 +1,22 @@
+# Deployment Workflow
+#
+# This GitHub Actions workflow automates the deployment process for the prototype project.
+# It is triggered after the Infrastructure workflow completes or on a daily schedule.
+#
+# Key features:
+# 1. Sets up the environment and determines the deployment target (dev for main branch)
+# 2. Deploys the web application to Azure App Service
+# 3. Configures web app settings post-deployment
+#
+# The workflow includes:
+# - Environment setup and variable configuration
+# - Azure login and credential management
+# - Web app deployment using a matrix strategy for multiple apps
+# - App settings configuration for specific web apps
+#
+# Note: Ensure all required secrets (AZURE_CREDENTIALS) and variables are set in the
+# GitHub repository settings before running this workflow.
+
 name: Deployment
 run-name: 🚀 Deploying from ${{ github.ref_name }}
 

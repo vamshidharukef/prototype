@@ -1,3 +1,22 @@
+/*
+  This Bicep template deploys a secure web application infrastructure on Azure.
+  It includes the following resources:
+  - Log Analytics Workspace for monitoring
+  - Virtual Network with subnets for the web app and private endpoints
+  - App Service Plan and Web App with VNet integration and private endpoint
+  - Azure Front Door with WAF policy for secure content delivery
+  - Private DNS zone for the web app
+
+  The template emphasizes security by implementing:
+  - VNet integration for the web app
+  - Private endpoints for secure access
+  - IP restrictions to allow traffic only from the VNet and Azure Front Door
+  - Web Application Firewall (WAF) policy with custom rules
+
+  Parameters allow for customization of resource names, locations, and network configurations.
+*/
+
+
 @description('The name of the web app that you wish to create.')
 param webAppName string
 
