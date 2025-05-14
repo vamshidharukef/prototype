@@ -88,8 +88,8 @@ runs:
     
     - name: Build and push image to ACR
       shell: bash
-      working-file: ${{ github.workspace }}
       run: |
+          cd ${{ github.workspace }}
           docker build . -t ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
           docker push ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
 
