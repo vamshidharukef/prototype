@@ -64,9 +64,6 @@ param allowIpRange string
 @description('Provide a globally unique name of your Azure Container Registry')
 param acrName string = 'acr${uniqueString(resourceGroup().id)}'
 
-@description('Provide a location for the registry.')
-param location string = resourceGroup().location
-
 @description('Provide a tier of your Azure Container Registry.')
 param acrSku string = 'Basic'
 
