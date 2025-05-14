@@ -60,7 +60,7 @@ runs:
     - name: 'Login to Azure'
       uses: azure/login@v1
       with:
-        creds: ${{ inputs.azure-credentials }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: ACR 🔐
       uses: azure/docker-login@v2
