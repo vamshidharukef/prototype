@@ -26,12 +26,21 @@ inputs:
   group:
     description: 'Azure resource group'
     required: true
-  credentials:
+  azure-credentials:
     description: 'Azure subscription and resource group service principal'
     required: true
-  acr:
+  acr-password:
     description: 'Azure container registry password'
-    required: true  
+    required: true
+  product:
+    description: 'Product name'
+    required: true
+  environment:
+    description: 'Environment name'
+    required: true
+  version:
+    description: 'Version'
+    required: true
 
 runs:
   using: "composite"
@@ -45,47 +54,49 @@ runs:
       uses: azure/cli@v2.1.0
       with:
         inlineScript: |
-          # Basic
           az configure --defaults location=${{ inputs.region }}
           az configure --defaults group=${{ inputs.group }}    
 
     - name: 'Login to Azure'
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        creds: ${{ inputs.azure-credentials }}
 
     - name: ACR 🔐
       uses: azure/docker-login@v2
       with:
-        login-server: ${{ env.ACR }}
-        username: ${{ env.ACR_USER }}
-        password: ${{ inputs.acr }}
+        login-server: ${{ inputs.acr-name }}.azurecr.io
+        username: ${{ inputs.acr-name }}
+        password: ${{ inputs.acr-password }}
 
     - name: Get ACR Details
       id: acr_details
+      shell: bash
       run: |
-          ACR_NAME=$(az acr list --resource-group rg-${{ needs.setup.outputs.product }}-${{ needs.setup.outputs.environment }}-${{ vars.VERSION }} --query "[0].name" -o tsv)
+          ACR_NAME=$(az acr list --resource-group rg-${{ inputs.product }}-${{ inputs.environment }}-${{ inputs.version }} --query "[0].name" -o tsv)
           echo "ACR_NAME=$ACR_NAME" >> $GITHUB_OUTPUT
           echo "ACR_LOGIN_SERVER=$ACR_NAME.azurecr.io" >> $GITHUB_OUTPUT
 
     - name: Generate ACR Credentials
       id: acr_creds
+      shell: bash
       run: |
-          ACR_CREDS=$(az acr credential renew --name ${{ steps.acr_details.outputs.ACR_NAME }} --resource-group rg-${{ needs.setup.outputs.product }}-${{ needs.setup.outputs.environment }}-${{ vars.VERSION }} --query "{username:username, password:passwords[0].value}" -o json)
+          ACR_CREDS=$(az acr credential renew --name ${{ steps.acr_details.outputs.ACR_NAME }} --resource-group rg-${{ inputs.product }}-${{ inputs.environment }}-${{ inputs.version }} --query "{username:username, password:passwords[0].value}" -o json)
           echo "ACR_USERNAME=$(echo $ACR_CREDS | jq -r .username)" >> $GITHUB_OUTPUT
           echo "ACR_PASSWORD=$(echo $ACR_CREDS | jq -r .password)" >> $GITHUB_OUTPUT        
 
     - name: Build and push image to ACR
       uses: azure/docker-login@v1
       with:
-          login-server: ${{ env.ACR_NAME }}.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-    - run: |
-          docker build . -t ${{ env.ACR_NAME }}.azurecr.io/${{ matrix.webapp }}:${{ github.sha }}
-          docker push ${{ env.ACR_NAME }}.azurecr.io/${{ matrix.webapp }}:${{ github.sha }}
+          login-server: ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}
+          username: ${{ steps.acr_creds.outputs.ACR_USERNAME }}
+          password: ${{ steps.acr_creds.outputs.ACR_PASSWORD }}
+    - shell: bash
+      run: |
+          docker build . -t ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
+          docker push ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
 
     - name: 'Logout from Azure'
+      shell: bash
       run: |
         az logout
-      shell: bash
