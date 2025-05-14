@@ -85,6 +85,7 @@ jobs:
       - name: Deploy to WebApp ⚡
         uses: ./.github/actions/webapp
         with:
+          azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
           app-name: ${{ matrix.webapp }}
           resource-group: rg-${{ env.PRODUCT }}--${{ vars.VERSION }}
           acr-name: ${{ env.ACR_NAME }}
