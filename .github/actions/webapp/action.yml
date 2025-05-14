@@ -91,9 +91,4 @@ runs:
       run: |
           cd ${{ github.workspace }}
           docker build . -t ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
-          docker push ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
-
-    - name: 'Logout from Azure'
-      shell: bash
-      run: |
-        az logout
+          docker push ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}/${{ inputs.image-name }}:${{ inputs.image-tag }}    
