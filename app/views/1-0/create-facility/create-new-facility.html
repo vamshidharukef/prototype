@@ -1,0 +1,140 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+Create new facility
+{% endblock %}
+
+{% block beforeContent %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-l">001122334  |  Export insurance policy (EXIP)</span>
+      <h1 class="govuk-heading-l">Create new facility</h1>
+
+      <p>1 of 7 sections complete</p>
+
+      <h2 class="govuk-heading-m">Add facility details</h2>
+   
+          <ul class="govuk-task-list">
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="add-obligor.html" aria-describedby="task-list-1-status">
+                  Facility overview
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="task-list-1-status">
+                Completed
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="task-list-2-status">
+                  Repayments profile
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="task-list-2-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                 Not started yet
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="task-list-3-status">
+                  Counterparties
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="task-list-3-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started yet
+                </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="task-list-3-status">
+                  Additional details
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="task-list-3-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Not started yet
+                </strong>
+              </div>
+            </li>
+          </ul>
+    
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Add loan details</h2>
+
+     
+          <ul class="govuk-task-list">
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                
+                  Obligation
+               
+              </div>
+              <div class="govuk-task-list__status" id="task-list-1-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Cannot start yet
+                 </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                Fees
+              </div>
+              <div class="govuk-task-list__status" id="task-list-2-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Cannot start yet
+                 </strong>
+              </div>
+            </li>
+           
+          </ul>
+       
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-5">Review and request approval</h2>
+
+    
+          <ul class="govuk-task-list">
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="task-list-1-status">
+                  Review facility
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="task-list-1-status">
+                <strong class="govuk-tag govuk-tag--pink">
+                  Review
+                 </strong>
+              </div>
+            </li>
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+              <div class="govuk-task-list__name-and-hint">
+                <!-- <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="task-list-2-status"> -->
+                  Request approval
+              <!-- </a>--> 
+              </div>
+              <div class="govuk-task-list__status" id="task-list-2-status">
+                <strong class="govuk-tag govuk-tag--grey">
+                  Cannot start yet
+                 </strong>
+              </div>
+            </li>
+           
+          </ul>
+   
+
+
+      <div class="govuk-!-margin-top-5" style="display: none;">
+        {{ govukButton({ text: "Submit", href: "#" }) }}
+      </div>
+
+    </div>
+  </div>
+{% endblock %}

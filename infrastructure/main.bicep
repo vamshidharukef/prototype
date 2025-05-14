@@ -59,6 +59,17 @@ param vnetSubnetPrivatePrefix string
 @description('Allows IP address')
 param allowIpRange string
 
+@minLength(5)
+@maxLength(50)
+@description('Provide a globally unique name of your Azure Container Registry')
+param acrName string = 'acr${uniqueString(resourceGroup().id)}'
+
+@description('Provide a location for the registry.')
+param location string = resourceGroup().location
+
+@description('Provide a tier of your Azure Container Registry.')
+param acrSku string = 'Basic'
+
 var frontDoorSkuName = 'Premium_AzureFrontDoor'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
@@ -74,6 +85,17 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
     }
   }
   tags: tags
+}
+
+resource acrResource 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = {
+  name: acrName
+  location: location
+  sku: {
+    name: acrSku
+  }
+  properties: {
+    adminUserEnabled: false
+  }
 }
 
 resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -140,7 +162,7 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
-      linuxFxVersion: 'NODE|14-lts'
+      linuxFxVersion: 'NODE|20-lts'
       alwaysOn: true                
     }
     publicNetworkAccess: 'Disabled'     

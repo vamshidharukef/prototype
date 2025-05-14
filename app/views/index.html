@@ -1,0 +1,66 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Home" %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+    <h1 class="govuk-heading-xl">
+      GIFT
+
+    </h1>
+
+    <h2 class="govuk-heading-m">Prototype versions</h2>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Version</th>
+          <th scope="col" class="govuk-table__header">Status</th>
+          <th scope="col" class="govuk-table__header">What's changed</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header" style="font-size: 21px; min-width: 150px">
+            <a href="/1-0/index.html"
+              class="govuk-link govuk-link--no-visited-state govuk-!-font-weight-bold" style="font-size: 21px">
+
+              Version 1-0</a>
+
+          </th>
+          <td class="govuk-table__cell">
+            <strong class="govuk-tag">
+              Design in progress
+            </strong>
+            <br>
+
+          </td>
+          <td class="govuk-table__cell">
+            <ul class="govuk-list govuk-list--bullet">
+              <li>
+                  Approver dashboard 
+              </li>
+
+
+            </ul>
+          </td>
+        </tr>
+
+        </tbody>
+        </table>
+
+        <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    {% include "govuk-prototype-kit/includes/homepage-bottom.njk" %}
+
+
+  </div>
+
+  
+</div>
+
+{% endblock %}

@@ -1,0 +1,252 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+Add facility overview
+{% endblock %}
+
+{% block beforeContent %}
+{{ govukBackLink({
+text: "Back",
+href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">
+      Add facility overview
+    </h1>
+
+    <form class="form" action="review-facility" method="get">
+
+      <p>
+
+
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Key information
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> key information</span></a>
+            </li>
+
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Facility ID
+              </dt>
+              <dd class="govuk-summary-list__value">
+                001122334
+              </dd>
+
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Product type
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Export Insurance Policy (EXIP)
+              </dd>
+
+            </div>
+
+          </dl>
+        </div>
+      </div>
+
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Obligor
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> key information</span></a>
+            </li>
+
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                URN
+              </dt>
+              <dd class="govuk-summary-list__value">
+                0012345678
+              </dd>
+
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Name
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Universal LTD
+              </dd>
+
+            </div>
+
+          </dl>
+        </div>
+      </div>
+
+
+      <div class="govuk-form-group">
+
+        <h3 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--s" for="fname">
+            Facility name
+          </label>
+        </h3>
+        <div id="event-name-hint" class="govuk-hint" style="display: none;">
+          Hint text - change display to block
+        </div>
+        <input class="govuk-input govuk-input--width-10" id="fname" name="fname" type="text">
+
+
+      </div>
+
+      <div class="govuk-form-group">
+
+        <h3 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--s" for="currency">
+            Currency and amount
+          </label>
+        </h3>
+     
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <select class="govuk-select govuk-input--width-5" id="currency" name="currency" aria-describedby="currency-hint" style="width: 80px !important; min-width: 80px !important;">
+            <option value="GBP" selected>GBP</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="JPY">JPY</option>
+          </select>
+          
+          <input class="govuk-input govuk-input--width-10" id="" name="" type="text">
+        </div>
+      </div>
+
+
+      
+      <div class="moj-datepicker" data-module="moj-date-picker">
+
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="effdate">
+            Effective date
+          </label>
+      
+          <div id="date-hint" class="govuk-hint">
+            For example, 17/5/2025.
+          </div>
+      
+          <input class="govuk-input moj-js-datepicker-input " id="effdate" name="effdate" type="text" aria-describedby="date-hint" autocomplete="off">
+      
+        </div>
+      
+      </div>
+
+      <div class="moj-datepicker" data-module="moj-date-picker">
+
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="expdate">
+            Expiry date
+          </label>
+      
+          <div id="date-hint" class="govuk-hint">
+            For example, 17/5/2025.
+          </div>
+      
+          <input class="govuk-input moj-js-datepicker-input " id="expdate" name="expdate" type="text" aria-describedby="date-hint" autocomplete="off">
+      
+        </div>
+      
+      </div>
+
+      <div class="moj-datepicker" data-module="moj-date-picker">
+
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="eocdate">
+            End of cover date
+          </label>
+      
+          <div id="date-hint" class="govuk-hint">
+            For example, 17/5/2025.
+          </div>
+      
+          <input class="govuk-input moj-js-datepicker-input " id="eocdate" name="eocdate" type="text" aria-describedby="date-hint" autocomplete="off">
+      
+        </div>
+      
+      </div>
+
+      <div class="govuk-form-group">
+
+        <h3 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--s" for="dealID">
+            Deal ID (optional)
+          </label>
+        </h3>
+        <div id="event-name-hint" class="govuk-hint" style="display: none;">
+          Hint text - change display to block
+        </div>
+        <input class="govuk-input govuk-input--width-10" id="dealID" name="dealID" type="text">
+
+
+      </div>
+
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="isRevFacility-hint">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            <h1 class="govuk-fieldset__heading">
+              Is the facility revolving?
+            </h1>
+          </legend>
+          
+          <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="isRevFacility-2" name="isRevFacility" type="radio" value="no">
+              <label class="govuk-label govuk-radios__label" for="isRevFacility-2">
+                No
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="isRevFacility" name="isRevFacility" type="radio" value="yes">
+              <label class="govuk-label govuk-radios__label" for="isRevFacility">
+                Yes
+              </label>
+            </div>
+           
+          </div>
+        </fieldset>
+      </div>
+      
+
+
+
+
+      </p>
+      <br /> <br />
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button " data-module="govuk-button">
+          Save and continue
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

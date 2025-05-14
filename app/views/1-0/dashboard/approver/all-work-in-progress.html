@@ -1,0 +1,565 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<style>
+  .govuk-table__cell {
+   
+    vertical-align: middle;
+  }
+
+  .govuk-table__cell .govuk-radios {
+    padding-left: 10px;
+
+    vertical-align: top;
+  }
+
+ 
+</style>
+<div class="moj-page-header-actions">
+  <div class="moj-page-header-actions__title">
+    <h1 class="govuk-heading-xl">Hi {{ data['userName'] if data['userName'] else 'John' }}</h1>
+
+  </div>
+
+  <div class="moj-page-header-actions__actions">
+    <div class="moj-button-group moj-button-group--inline">
+      <button type="submit" class="govuk-button" data-module="govuk-button">
+        New facility
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<nav class="moj-sub-navigation" aria-label="Sub navigation">
+
+  <ul class="moj-sub-navigation__list">
+    <li class="moj-sub-navigation__item">
+      <a class="moj-sub-navigation__link" aria-current="page" href="#1">All work in progress</a>
+    </li>
+
+    <li class="moj-sub-navigation__item">
+      <a class="moj-sub-navigation__link" href="#2">Recently approved</a>
+    </li>
+
+    <li class="moj-sub-navigation__item">
+      <a class="moj-sub-navigation__link" href="#3">Search facilities</a>
+    </li>
+  </ul>
+
+</nav>
+
+
+
+<div class="moj-banner moj-banner--success" role="region" aria-label="Success" style="display: none;" id="rejection-banner">
+  <svg class="moj-banner__icon" fill="currentColor" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" height="25" width="25">
+    <path d="M25,6.2L8.7,23.2L0,14.1l4-4.2l4.7,4.9L21,2L25,6.2z" />
+  </svg>
+  <div class="moj-banner__message">Approval for facility 0020017319 rejected.</div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const reject = urlParams.get('reject');
+    
+    if (reject === 'true') {
+      document.getElementById('rejection-banner').style.display = 'block';
+    }
+  });
+</script>
+
+
+<h2 class="govuk-heading-l govuk-visually-hidden">All work in progress</h2>
+
+
+<div class="moj-filter-layout">
+
+
+
+  <!-- FILTER MODULE STARTS HERE -->
+  <div class="moj-filter-layout__filter" id="showHideFilter" style="display: none;">
+
+    <div class="moj-filter">
+
+      <div class="moj-filter__header">
+
+        <div class="moj-filter__header-title">
+          <h2 class="govuk-heading-m">Filter</h2>
+        </div>
+
+        <div class="moj-filter__header-action">
+
+        </div>
+
+      </div>
+
+      <div class="moj-filter__content">
+
+        <div class="moj-filter__selected">
+
+          <div class="moj-filter__selected-heading">
+
+            <div class="moj-filter__heading-title">
+              <h2 class="govuk-heading-m">Selected filters</h2>
+            </div>
+
+            <div class="moj-filter__heading-action">
+              <p><a class="govuk-link govuk-link--no-visited-state" href="">Clear filters</a></p>
+            </div>
+
+          </div>
+          <p> No filters selected</p>
+
+          <!--
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Product</h3>
+
+          <ul class="moj-filter-tags">
+
+            <li><a class="moj-filter__tag" href="#"><span class="govuk-visually-hidden">Remove this filter</span>
+                EXIP</a></li>
+
+          </ul>
+
+          -->
+
+        </div>
+
+        <div class="moj-filter__options">
+
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Apply filters
+          </button>
+
+          <div class="govuk-form-group" style="display: none;">
+            <label class="govuk-label govuk-label--m" for="keywords">
+              Facility ID
+            </label>
+
+            <input class="govuk-input" id="keywords" name="keywords" type="text">
+
+          </div>
+
+          <div class="govuk-form-group">
+
+            <fieldset class="govuk-fieldset">
+
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+
+                Product
+
+              </legend>
+
+              <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="type" name="type" type="checkbox" value="1">
+                  <label class="govuk-label govuk-checkboxes__label" for="type">
+                    BIP (3)
+                  </label>
+
+                </div>
+
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="type" name="type" type="checkbox" value="2">
+                  <label class="govuk-label govuk-checkboxes__label" for="type">
+                    EDG (0)
+                  </label>
+
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="type-2" name="type" type="checkbox" value="3">
+                  <label class="govuk-label govuk-checkboxes__label" for="type-2">
+                    EXIP (2)
+                  </label>
+
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="type-3" name="type" type="checkbox" value="4">
+                  <label class="govuk-label govuk-checkboxes__label" for="type-3">
+                    GEF (0)
+                  </label>
+
+                </div>
+
+
+
+              </div>
+
+            </fieldset>
+
+          </div>
+
+          <div class="govuk-form-group">
+
+            <fieldset class="govuk-fieldset">
+
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+
+                Activity status
+
+              </legend>
+
+              <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="status" name="status" type="checkbox" value="1">
+                  <label class="govuk-label govuk-checkboxes__label" for="status">
+                    Approval received (1)
+                  </label>
+
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="status-2" name="status" type="checkbox" value="2">
+                  <label class="govuk-label govuk-checkboxes__label" for="status-2">
+                    Pending approval (2)
+                  </label>
+
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="status-3" name="status" type="checkbox" value="3">
+                  <label class="govuk-label govuk-checkboxes__label" for="status-3">
+                    Pending input (0)
+                  </label>
+
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="status-3" name="status" type="checkbox" value="4">
+                  <label class="govuk-label govuk-checkboxes__label" for="status-3">
+                    In progress (2)
+                  </label>
+
+                </div>
+
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="status-3" name="status" type="checkbox" value="5">
+                  <label class="govuk-label govuk-checkboxes__label" for="status-3">
+                    Repair needed (0)
+                  </label>
+
+                </div>
+
+              </div>
+
+            </fieldset>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  <!-- FILTER MODULE ENDS HERE -->
+
+
+
+  <div class="moj-filter-layout__content">
+
+    <div class="moj-action-bar">
+
+
+      <div class="moj-action-bar">
+        <div class="moj-action-bar__filter">
+          <button class="govuk-button govuk-button--secondary" type="button" aria-haspopup="true" aria-expanded="false"
+            onclick="toggleFilter(this)">
+            Show filter
+          </button>
+        </div>
+
+        <div class="moj-button-menu" data-module="moj-button-menu" style="display: none;">
+
+          <button type="submit" class="govuk-button moj-button-menu__item govuk-button--secondary govuk-button--secondary" data-module="govuk-button">
+            Action 1
+          </button>
+  
+          <button type="submit" class="govuk-button moj-button-menu__item govuk-button--secondary govuk-button--secondary govuk-button--secondary" data-module="govuk-button">
+            Action 2
+          </button>
+  
+        </div>
+
+        <a href="rekey-facility-details.html" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button" style="float: right; display: none; ">
+          Start approval
+        
+        </a>
+
+        
+        <button type="submit" class="govuk-button" data-module="govuk-button" style="float: right; display: none;">
+          Start approval
+        </button>
+      </div>
+
+     
+      
+
+      <table class="govuk-table" data-module="moj-sortable-table">
+
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+
+          
+
+            <th scope="col" class="govuk-table__header" aria-sort="none">Date created</th>
+
+            <th scope="col" class="govuk-table__header" aria-sort="none">Facility ID</th>
+
+            <th scope="col" class="govuk-table__header" aria-sort="none">Product</th>
+
+            <th scope="col" class="govuk-table__header" aria-sort="none">Oblogor</th>
+
+            <th scope="col" class="govuk-table__header" aria-sort="none">Facility description</th>
+
+            <th scope="col" class="govuk-table__header" aria-sort="none">Work package description</th>
+
+            <th scope="col" class="govuk-table__header" aria-sort="none">Last updated by</th>
+
+            <th scope="col" class="govuk-table__header" aria-sort="none">Previous approver</th>
+
+            <th scope="col" class="govuk-table__header" aria-sort="none">Activity status</th>
+
+            <th scope="col" class="govuk-table__header">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody class="govuk-table__body">
+
+
+           <!-- start of row-->
+          <tr class="govuk-table__row">
+
+
+            <td class="govuk-table__cell" data-sort-value="">   01 Sept 2024    </td>
+
+            <td class="govuk-table__cell" data-sort-value="">  0020017319    </td>
+
+            <td class="govuk-table__cell" data-sort-value="">  BIP    </td>
+
+            <td class="govuk-table__cell">   Universal LTD   </td>
+
+            <td class="govuk-table__cell ">     FPP/OWC/Universal LTD BIP 0+3+12/Shipment 1    </td>
+            <!--govuk-table__cell--numeric-->
+            <td class="govuk-table__cell" data-sort-value="">   New facility   </td>
+
+            <td class="govuk-table__cell">
+              Michael Burnett
+            </td>
+            <td class="govuk-table__cell"> - </td>
+            <td class="govuk-table__cell" data-sort-value=""><strong class="govuk-tag govuk-tag--yellow">
+                Pending approval
+              </strong>
+            </td>
+
+            <td class="govuk-table__cell" data-sort-value="">  <a href="rekey-facility-details.html" style="font-weight: bold;"> Start approval </a>  </td>
+
+          </tr>
+          <!-- end of row-->
+
+
+          <!-- start of row-->
+          <tr class="govuk-table__row">
+
+          
+
+            <td class="govuk-table__cell" data-sort-value="">   02 Sept 2024    </td>
+
+            <td class="govuk-table__cell" data-sort-value="">  0020017326   </td>
+
+            <td class="govuk-table__cell" data-sort-value="">  BIP    </td>
+
+            <td class="govuk-table__cell">   Travel LTD  </td>
+
+            <td class="govuk-table__cell ">     FPP/OWC/Travel LTD BIP 0+3+12/Shipment 1   </td>
+            <!--govuk-table__cell--numeric-->
+            <td class="govuk-table__cell" data-sort-value="">  Amend obligation  </td>
+
+            <td class="govuk-table__cell">
+              Michael Burnett
+            </td>
+            <td class="govuk-table__cell"> - </td>
+            <td class="govuk-table__cell" data-sort-value=""><strong class="govuk-tag govuk-tag--yellow">
+                Pending approval
+              </strong>
+            </td>
+
+            <td class="govuk-table__cell" data-sort-value="">  <a href="rekey-facility-details.html" style="font-weight: bold;"> Start approval </a>  </td>
+
+          </tr>
+          <!-- end of row-->
+
+
+           <!-- start of row-->
+           <tr class="govuk-table__row">
+
+        
+
+            <td class="govuk-table__cell" data-sort-value="">   30 Aug 2024  </td>
+
+            <td class="govuk-table__cell" data-sort-value=""> <a href="#">0020017327</a>    </td>
+
+            <td class="govuk-table__cell" data-sort-value="">  BIP    </td>
+
+            <td class="govuk-table__cell">   Travel LTD  </td>
+
+            <td class="govuk-table__cell ">     FPP/OWC/Travel LTD BIP 0+3+12/Shipment 1   </td>
+            <!--govuk-table__cell--numeric-->
+            <td class="govuk-table__cell" data-sort-value="">  New obligation  </td>
+
+            <td class="govuk-table__cell">
+              Michael Burnett
+            </td>
+            <td class="govuk-table__cell"> 
+              Adam Green
+            </td>
+            <td class="govuk-table__cell" data-sort-value=""><strong class="govuk-tag govuk-tag--green">
+               Approval received
+              </strong>
+            </td>
+
+            <td class="govuk-table__cell" data-sort-value=""> &nbsp;  </td>
+
+          </tr>
+          <!-- end of row-->
+
+
+          <!-- start of row-->
+          <tr class="govuk-table__row">
+
+         
+
+            <td class="govuk-table__cell" data-sort-value="">   -  </td>
+
+            <td class="govuk-table__cell" data-sort-value=""> <a href="#"> 0020017328 </a> </td>
+
+            <td class="govuk-table__cell" data-sort-value="">  EXIP    </td>
+
+            <td class="govuk-table__cell">   Hulu limited  </td>
+
+            <td class="govuk-table__cell ">    FPP/OWC/Hulu limited EXIP 0+3+12/Shipment 1  </td>
+            <!--govuk-table__cell--numeric-->
+            <td class="govuk-table__cell" data-sort-value=""> New facility  </td>
+
+            <td class="govuk-table__cell">
+              Michael Burnett
+            </td>
+            <td class="govuk-table__cell"> 
+              -
+            </td>
+            <td class="govuk-table__cell" data-sort-value=""><strong class="govuk-tag govuk-tag--blue">
+               In progress
+              </strong>
+            </td>
+
+            <td class="govuk-table__cell" data-sort-value=""> &nbsp;  </td>
+
+          </tr>
+          <!-- end of row-->
+
+
+            <!-- start of row-->
+            <tr class="govuk-table__row">
+
+            
+  
+              <td class="govuk-table__cell" data-sort-value="">   -  </td>
+  
+              <td class="govuk-table__cell" data-sort-value=""> <a href="#">0020017329  </a> </td>
+  
+              <td class="govuk-table__cell" data-sort-value="">  EXIP    </td>
+  
+              <td class="govuk-table__cell">   Hulu limited  </td>
+  
+              <td class="govuk-table__cell ">    FPP/OWC/Hulu limited EXIP 0+3+12/Shipment 1  </td>
+              <!--govuk-table__cell--numeric-->
+              <td class="govuk-table__cell" data-sort-value=""> New facility  </td>
+  
+              <td class="govuk-table__cell">
+                Michael Burnett
+              </td>
+              <td class="govuk-table__cell"> 
+                -
+              </td>
+              <td class="govuk-table__cell" data-sort-value=""><strong class="govuk-tag govuk-tag--blue">
+                 In progress
+                </strong>
+              </td>
+
+              <td class="govuk-table__cell" data-sort-value=""> &nbsp;  </td>
+  
+            </tr>
+            <!-- end of row-->
+
+
+
+            <!-- start of row-->
+            <tr class="govuk-table__row">
+
+            
+  
+              <td class="govuk-table__cell" data-sort-value="">   29 Aug 2024 </td>
+  
+              <td class="govuk-table__cell" data-sort-value=""> <a href="#">0020017312  </a> </td>
+  
+              <td class="govuk-table__cell" data-sort-value="">  BIP    </td>
+  
+              <td class="govuk-table__cell"> Wilko Stores LTD  </td>
+  
+              <td class="govuk-table__cell ">    FPP/OWC/Wilko Stores LTD EXIP 0+3+12/Shipment 1  </td>
+              <!--govuk-table__cell--numeric-->
+              <td class="govuk-table__cell" data-sort-value="">Amend obligation  </td>
+  
+              <td class="govuk-table__cell">
+                Michael Burnett
+              </td>
+              <td class="govuk-table__cell"> 
+                Ian James
+              </td>
+              <td class="govuk-table__cell" data-sort-value=""><strong class="govuk-tag govuk-tag--red">
+                 Approval rejected
+                </strong>
+              </td>
+
+              <td class="govuk-table__cell" data-sort-value=""> &nbsp;  </td>
+  
+            </tr>
+            <!-- end of row-->
+
+
+
+
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <script>
+    function toggleFilter(button) {
+      const filterContainer = document.getElementById('showHideFilter');
+
+      if (filterContainer.style.display === 'none' || !filterContainer.style.display) {
+        filterContainer.style.display = 'block';
+        button.textContent = 'Hide filter';
+        button.setAttribute('aria-expanded', 'true');
+      } else {
+        filterContainer.style.display = 'none';
+        button.textContent = 'Show filter';
+        button.setAttribute('aria-expanded', 'false');
+      }
+    }
+  </script>
+
+  {% endblock %}
