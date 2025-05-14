@@ -70,15 +70,29 @@ runs:
           echo "ACR_NAME=$ACR_NAME" >> $GITHUB_OUTPUT
           echo "ACR_LOGIN_SERVER=$ACR_NAME.azurecr.io" >> $GITHUB_OUTPUT
 
+    - name: Get ACR Details
+      id: acr_details
+      shell: bash
+      run: |
+          ACR_NAME=$(az acr list --resource-group ${{ inputs.resource-group }} --query "[0].name" -o tsv)
+          echo "ACR_NAME=$ACR_NAME" >> $GITHUB_OUTPUT
+          echo "ACR_LOGIN_SERVER=$ACR_NAME.azurecr.io" >> $GITHUB_OUTPUT
+    
+    - name: Enable ACR Admin User
+      shell: bash
+      run: |
+          az acr update -n ${{ steps.acr_details.outputs.ACR_NAME }} --admin-enabled true
+          
     - name: Generate ACR Credentials
       id: acr_creds
       shell: bash
       run: |
           ACR_CREDS=$(az acr credential show --name ${{ steps.acr_details.outputs.ACR_NAME }} --resource-group ${{ inputs.resource-group }} --query "{username:username, password:passwords[0].value}" -o json)
           echo "ACR_USERNAME=$(echo $ACR_CREDS | jq -r .username)" >> $GITHUB_OUTPUT
+          echo "::add-mask::$(echo $ACR_CREDS | jq -r .username)"
           echo "ACR_PASSWORD=$(echo $ACR_CREDS | jq -r .password)" >> $GITHUB_OUTPUT
+          echo "::add-mask::$(echo $ACR_CREDS | jq -r .password)"
     
-
     - name: ACR 🔐
       uses: azure/docker-login@v2
       with:
@@ -87,12 +101,7 @@ runs:
         password: ${{ steps.acr_creds.outputs.ACR_PASSWORD }}
     
     - name: Build and push image to ACR
-      uses: azure/docker-login@v1
-      with:
-          login-server: ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}
-          username: ${{ steps.acr_creds.outputs.ACR_USERNAME }}
-          password: ${{ steps.acr_creds.outputs.ACR_PASSWORD }}
-    - shell: bash
+      shell: bash
       run: |
           docker build . -t ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
           docker push ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
