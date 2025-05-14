@@ -7,9 +7,6 @@ inputs:
   resource-group:
     description: 'Name of the Azure Resource Group'
     required: true
-  acr-name:
-    description: 'Name of the Azure Container Registry'
-    required: true
   image-name:
     description: 'Name of the container image'
     required: true
@@ -28,9 +25,6 @@ inputs:
     required: true
   azure-credentials:
     description: 'Azure subscription and resource group service principal'
-    required: true
-  acr-password:
-    description: 'Azure container registry password'
     required: true
   product:
     description: 'Product name'
@@ -61,14 +55,6 @@ runs:
       uses: azure/login@v1
       with:
         creds: ${{ inputs.azure-credentials }}
-
-    - name: Get ACR Details
-      id: acr_details
-      shell: bash
-      run: |
-          ACR_NAME=$(az acr list --resource-group ${{ inputs.resource-group }} --query "[0].name" -o tsv)
-          echo "ACR_NAME=$ACR_NAME" >> $GITHUB_OUTPUT
-          echo "ACR_LOGIN_SERVER=$ACR_NAME.azurecr.io" >> $GITHUB_OUTPUT
 
     - name: Get ACR Details
       id: acr_details
