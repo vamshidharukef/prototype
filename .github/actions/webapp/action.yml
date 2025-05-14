@@ -66,7 +66,7 @@ runs:
       id: acr_details
       shell: bash
       run: |
-          ACR_NAME=$(az acr list --resource-group rg-${{ inputs.product }}-${{ inputs.environment }}-${{ inputs.version }} --query "[0].name" -o tsv)
+          ACR_NAME=$(az acr list --resource-group rg-${{ inputs.product }}--${{ inputs.version }} --query "[0].name" -o tsv)
           echo "ACR_NAME=$ACR_NAME" >> $GITHUB_OUTPUT
           echo "ACR_LOGIN_SERVER=$ACR_NAME.azurecr.io" >> $GITHUB_OUTPUT
 
@@ -74,7 +74,7 @@ runs:
       id: acr_creds
       shell: bash
       run: |
-          ACR_CREDS=$(az acr credential renew --name ${{ steps.acr_details.outputs.ACR_NAME }} --resource-group rg-${{ inputs.product }}-${{ inputs.environment }}-${{ inputs.version }} --query "{username:username, password:passwords[0].value}" -o json)
+          ACR_CREDS=$(az acr credential renew --name ${{ steps.acr_details.outputs.ACR_NAME }} --resource-group rg-${{ inputs.product }}--${{ inputs.version }} --query "{username:username, password:passwords[0].value}" -o json)
           echo "ACR_USERNAME=$(echo $ACR_CREDS | jq -r .username)" >> $GITHUB_OUTPUT
           echo "ACR_PASSWORD=$(echo $ACR_CREDS | jq -r .password)" >> $GITHUB_OUTPUT        
     
