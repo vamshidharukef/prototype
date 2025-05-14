@@ -62,13 +62,6 @@ runs:
       with:
         creds: ${{ inputs.azure-credentials }}
 
-    - name: ACR 🔐
-      uses: azure/docker-login@v2
-      with:
-        login-server: ${{ inputs.acr-name }}.azurecr.io
-        username: ${{ inputs.acr-name }}
-        password: ${{ inputs.acr-password }}
-
     - name: Get ACR Details
       id: acr_details
       shell: bash
@@ -84,7 +77,15 @@ runs:
           ACR_CREDS=$(az acr credential renew --name ${{ steps.acr_details.outputs.ACR_NAME }} --resource-group rg-${{ inputs.product }}-${{ inputs.environment }}-${{ inputs.version }} --query "{username:username, password:passwords[0].value}" -o json)
           echo "ACR_USERNAME=$(echo $ACR_CREDS | jq -r .username)" >> $GITHUB_OUTPUT
           echo "ACR_PASSWORD=$(echo $ACR_CREDS | jq -r .password)" >> $GITHUB_OUTPUT        
+    
 
+    - name: ACR 🔐
+      uses: azure/docker-login@v2
+      with:
+        login-server: ${{ inputs.acr-name }}.azurecr.io
+        username: ${{ inputs.acr-name }}
+        password: ${{ inputs.acr-password }}
+    
     - name: Build and push image to ACR
       uses: azure/docker-login@v1
       with:
