@@ -250,8 +250,7 @@ resource webAppRouteTable 'Microsoft.Network/routeTables@2023-04-01' = {
         id: 'route-to-webapp'
         properties: {
           addressPrefix: vnetSubnetWebappPrefix
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: 'allowIpRange'
+          nextHopType: 'VirtualAppliance'          
         }
       }
     ]
