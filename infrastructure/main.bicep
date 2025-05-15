@@ -365,10 +365,7 @@ resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' =
     manualPrivateLinkServiceConnections: []
     ipConfigurations: []
     customDnsConfigs: []
-  }
-  dependsOn: [
-    webApp
-  ]
+  }  
 }
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
