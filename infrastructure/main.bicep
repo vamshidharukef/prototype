@@ -160,7 +160,7 @@ resource registryWebHook 'Microsoft.ContainerRegistry/registries/webhooks@2024-1
     actions: [
       'push'      
     ]
-    serviceUrl: 'https://webapp.azurewebsites.net/api/webhook'  
+    serviceUri: 'https://webapp.azurewebsites.net/api/webhook'  
   }  
 }
 
@@ -178,10 +178,7 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         name: 'subnet-webapp'
         id: 'subnet-webapp'
         properties: {
-          addressPrefix: vnetSubnetWebappPrefix
-          routeTable: {
-            id: webAppRouteTable.id
-          }
+          addressPrefix: vnetSubnetWebappPrefix          
           delegations: [
             {
               name: 'webappDelegation'
@@ -201,10 +198,7 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         name: 'subnet-privateendpoint'
         id: 'subnet-privateendpoint'
         properties: {
-          addressPrefix: vnetSubnetPrivatePrefix
-          routeTable: {
-            id: webAppRouteTable.id
-          }
+          addressPrefix: vnetSubnetPrivatePrefix          
           delegations: []
           privateEndpointNetworkPolicies: 'Disabled'
           privateLinkServiceNetworkPolicies: 'Disabled'
@@ -314,7 +308,6 @@ resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetwor
 }
 
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
-  parent: webAppPrivateEndpoint
   name: 'default'
   properties: {
     privateDnsZoneConfigs: [
