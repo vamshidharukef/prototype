@@ -173,7 +173,6 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         vnetAddressPrefix
       ]
     }
-    privateEndpointVNetPolicies: 'Disabled'
     subnets: [
       {
         name: 'subnet-webapp'
@@ -252,7 +251,7 @@ resource webAppRouteTable 'Microsoft.Network/routeTables@2023-04-01' = {
         properties: {
           addressPrefix: vnetSubnetWebappPrefix
           nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: '${webAppName}.azurewebsites.net'
+          nextHopIpAddress: 'allowIpRange'
         }
       }
     ]
@@ -378,7 +377,6 @@ resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' =
 resource webAppPrivateEndpointConnection 'Microsoft.Web/sites/privateEndpointConnections@2024-04-01' = {
   parent: webApp
   name: '${webAppName}-peconnection'
-  location: location
   properties: {
     privateLinkServiceConnectionState: {
       status: 'Approved'
