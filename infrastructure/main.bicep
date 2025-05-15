@@ -332,6 +332,7 @@ resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' =
 }
 
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
+  parent: webAppPrivateEndpoint
   name: 'default'
   properties: {
     privateDnsZoneConfigs: [
