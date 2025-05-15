@@ -332,7 +332,26 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
     endToEndEncryptionEnabled: false
     redundancyMode: 'None'
     storageAccountRequired: false
+    publicNetworkAccess: 'Enabled'
     virtualNetworkSubnetId: webAppVnet.properties.subnets[0].id    
+  }
+}
+
+resource webAppFtps 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: webApp
+  name: 'ftp'
+  location: location
+  properties: {
+    allow: false
+  }
+}
+
+resource webAppScm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: webApp
+  name: 'scm'
+  location: location  
+  properties: {
+    allow: false
   }
 }
 
@@ -442,24 +461,27 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
     experiments: {
       rampUpRules: []
     }
-    autoHealEnabled: false    
+    autoHealEnabled: false
+    vnetName: webAppVnet.name   
     vnetRouteAllEnabled: true
-    vnetPrivatePortsCount: 0    
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'    
     ipSecurityRestrictions: [
       {
         ipAddress: 'Any'
-        action: 'Allow'
+        action: 'Deny'
         priority: 2147483647
-        name: 'Allow all'
-        description: 'Allow all access'
+        name: 'Deny all'
+        description: 'Deny all access'
       }
       {
         name: 'AllowAzureFrontDoor'
-        priority: 200
+        priority: 100
         action: 'Allow'
         ipAddress: allowIpRange        
       }         
     ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
     scmIpSecurityRestrictions: [
       {
         ipAddress: 'Any'
@@ -469,11 +491,12 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
         description: 'Allow all access'
       }
     ]
+    scmIpSecurityRestrictionsDefaultAction: 'Allow'
     scmIpSecurityRestrictionsUseMain: false
     http20Enabled: true
     minTlsVersion: '1.2'
     scmMinTlsVersion: '1.2'
-    ftpsState: 'Disabled'
+    ftpsState: 'FtpsOnly'
     preWarmedInstanceCount: 0
     elasticWebAppScaleLimit: 0
     functionsRuntimeScaleMonitoringEnabled: false
