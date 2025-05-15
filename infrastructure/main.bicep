@@ -99,7 +99,7 @@ resource acrResource 'Microsoft.ContainerRegistry/registries@2023-01-01-preview'
 
 resource registryRepositoryAdmin 'Microsoft.ContainerRegistry/registries/scopeMaps@2024-11-01-preview' = {
   parent: acrResource
-  name: '${acrName}/webapp_repository-admin'
+  name: 'webapp-repo-admin'
   properties: {
     description: 'Can perform all read, write and delete operations on the registry'
     actions: [
@@ -114,7 +114,7 @@ resource registryRepositoryAdmin 'Microsoft.ContainerRegistry/registries/scopeMa
 
 resource registryRepositoryPull 'Microsoft.ContainerRegistry/registries/scopeMaps@2024-11-01-preview' = {
   parent: acrResource
-  name: '${acrName}/webapp_repository-pull'
+  name: 'webapp-repo-pull'
   properties: {
     description: 'Can pull any repository of the registry'
     actions: [
@@ -126,7 +126,7 @@ resource registryRepositoryPull 'Microsoft.ContainerRegistry/registries/scopeMap
 
 resource registryRepositoryPush 'Microsoft.ContainerRegistry/registries/scopeMaps@2024-11-01-preview' = {
   parent: acrResource
-  name: '${acrName}/webapp_repository-push'
+  name: 'webapp-repo-push'
   properties: {
     description: 'Can push to any repository of the registry'
     actions: [
@@ -138,7 +138,7 @@ resource registryRepositoryPush 'Microsoft.ContainerRegistry/registries/scopeMap
 
 resource registryRepositoryPullPush 'Microsoft.ContainerRegistry/registries/scopeMaps@2024-11-01-preview' = {
   parent: acrResource
-  name: '${acrName}/webapp_repository-pullpush'
+  name: 'webapp-repo-pullpush'
   properties: {
     description: 'Can pull and push to any repository of the registry'
     actions: [
@@ -152,7 +152,7 @@ resource registryRepositoryPullPush 'Microsoft.ContainerRegistry/registries/scop
 
 resource registryWebHook 'Microsoft.ContainerRegistry/registries/webhooks@2024-11-01-preview' = {
   parent: acrResource
-  name: '${acrName}/webapp_webhook'
+  name: 'webapp-webhook'
   location: location
   properties: {
     status: 'enabled'
