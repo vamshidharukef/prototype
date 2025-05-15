@@ -307,6 +307,30 @@ resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetwor
   }
 }
 
+resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
+  name: '${webAppName}-pe'
+  location: location
+  properties: {
+    subnet: {
+      id: webAppVnet.properties.subnets[1].id 
+    }
+    privateLinkServiceConnections: [
+      {
+        name: '${webAppName}-plsc'
+        properties: {
+          privateLinkServiceId: webApp.id
+          groupIds: [
+            'sites'
+          ]          
+        }
+      }
+    ]
+    manualPrivateLinkServiceConnections: []
+    ipConfigurations: []
+    customDnsConfigs: []
+  }  
+}
+
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
   name: 'default'
   properties: {
