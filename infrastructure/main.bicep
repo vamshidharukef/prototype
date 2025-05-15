@@ -249,8 +249,7 @@ resource webAppRouteTable 'Microsoft.Network/routeTables@2023-04-01' = {
         name: 'route-to-webapp'
         id: 'route-to-webapp'
         properties: {
-          addressPrefix: vnetSubnetWebappPrefix
-          nextHopType: 'VirtualAppliance'          
+          addressPrefix: vnetSubnetWebappPrefix                    
         }
       }
     ]
@@ -463,8 +462,7 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
     experiments: {
       rampUpRules: []
     }
-    autoHealEnabled: false
-    vnetNamed: webAppVnet.name
+    autoHealEnabled: false    
     vnetRouteAllEnabled: true
     vnetPrivatePortsCount: 0    
     ipSecurityRestrictions: [
@@ -546,16 +544,7 @@ resource frontDoorOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01
     originHostHeader: '${webAppName}.azurewebsites.net'
     priority: 1
     weight: 1000
-    enabledState: 'Enabled'
-    sharedPrivateLinkResource: {
-      privateLink: {
-        id: webAppPrivateEndpoint.id
-      }
-      groupId: 'sites'
-      privateLinkLocation: {
-        id: webAppPrivateEndpoint.id
-      }
-    }
+    enabledState: 'Enabled'    
     enforceCertificateNameCheck: true
   }  
 }
