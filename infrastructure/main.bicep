@@ -80,6 +80,8 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
     workspaceCapping: {
       dailyQuotaGb: logQuota
     }
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'
   }
   tags: tags
 }
@@ -95,6 +97,73 @@ resource acrResource 'Microsoft.ContainerRegistry/registries@2023-01-01-preview'
   }
 }
 
+resource registryRepositoryAdmin 'Microsoft.ContainerRegistry/registries/scopeMaps@2024-11-01-preview' = {
+  parent: acrResource
+  name: '${acrName}/webapp_repository-admin'
+  properties: {
+    description: 'Can perform all read, write and delete operations on the registry'
+    actions: [
+      'repositories/webapp/repository/read'
+      'repositories/webapp/repository/write'
+      'repositories/webapp/repository/delete'
+      'repositories/webapp/repository/metadata/read'
+      'repositories/webapp/repository/metadata/write'
+    ]
+  }  
+}
+
+resource registryRepositoryPull 'Microsoft.ContainerRegistry/registries/scopeMaps@2024-11-01-preview' = {
+  parent: acrResource
+  name: '${acrName}/webapp_repository-pull'
+  properties: {
+    description: 'Can pull any repository of the registry'
+    actions: [
+      'repositories/*/content/read'
+      'repositories/*/metadata/read'
+    ]
+  }  
+}
+
+resource registryRepositoryPush 'Microsoft.ContainerRegistry/registries/scopeMaps@2024-11-01-preview' = {
+  parent: acrResource
+  name: '${acrName}/webapp_repository-push'
+  properties: {
+    description: 'Can push to any repository of the registry'
+    actions: [
+      'repositories/*/content/read'
+      'repositories/*/content/write'
+    ]
+  }  
+}
+
+resource registryRepositoryPullPush 'Microsoft.ContainerRegistry/registries/scopeMaps@2024-11-01-preview' = {
+  parent: acrResource
+  name: '${acrName}/webapp_repository-pullpush'
+  properties: {
+    description: 'Can pull and push to any repository of the registry'
+    actions: [
+      'repositories/*/content/read'
+      'repositories/*/content/write'
+      'repositories/*/metadata/read'
+      'repositories/*/metadata/write'
+    ]
+  }  
+}
+
+resource registryWebHook 'Microsoft.ContainerRegistry/registries/webhooks@2024-11-01-preview' = {
+  parent: acrResource
+  name: '${acrName}/webapp_webhook'
+  location: location
+  properties: {
+    status: 'enabled'
+    scope: 'webapp/*'
+    actions: [
+      'push'      
+    ]
+    serviceUri: 'https://webapp.azurewebsites.net/api/webhook'
+  }  
+}
+
 resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: 'vnet-${webAppName}'
   location: location
@@ -104,40 +173,99 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         vnetAddressPrefix
       ]
     }
+    privateEndpointVNetPolicies: 'Disabled'
     subnets: [
       {
         name: 'subnet-webapp'
+        id: 'subnet-webapp'
         properties: {
           addressPrefix: vnetSubnetWebappPrefix
-          privateEndpointNetworkPolicies: 'Disabled'
-          serviceEndpoints: [
-            {
-              service: 'Microsoft.Web'
-              locations: [
-                location
-              ]
-            }
-          ]
+          routeTable: {
+            id: routeTable.id
+          }
           delegations: [
             {
               name: 'webappDelegation'
+              id: 'webappDelegation'
               properties: {
                 serviceName: 'Microsoft.Web/serverFarms'
               }
+              type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
             }
           ]
+          privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Disabled'     
+          
         }
       }
       {
         name: 'subnet-privateendpoint'
+        id: 'subnet-privateendpoint'
         properties: {
           addressPrefix: vnetSubnetPrivatePrefix
+          routeTable: {
+            id: routeTable.id
+          }
+          delegations: []
           privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Disabled'
         }
+        type: 'Microsoft.Network/virtualNetworks/subnets'
       }
     ]
   }
   tags: tags
+}
+
+resource webAppVnetSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
+  parent: webAppVnet
+  name: 'subnet-webapp'
+  properties: {
+    addressPrefix: vnetSubnetWebappPrefix
+    routeTable: {
+      id: routeTable.id
+    }
+    delegations: [
+      {
+        name: 'webappDelegation'
+        id: 'webappDelegation'
+        properties: {
+          serviceName: 'Microsoft.Web/serverFarms'
+        }
+        type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+      }
+    ]
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Disabled'    
+  }
+}
+
+resource webAppRouteTable 'Microsoft.Network/routeTables@2023-04-01' = {
+  name: '${webAppName}-routeTable'
+  location: location
+  properties: {
+    disableBgpRoutePropagation: false
+    routes: [
+      {
+        name: 'route-to-webapp'
+        id: 'route-to-webapp'
+        properties: {
+          addressPrefix: vnetSubnetWebappPrefix
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: '${webAppName}.azurewebsites.net'
+        }
+      }
+    ]
+  }
+}
+
+resource webAppVnetVirtualNetworkConnection 'Microsoft.Network/virtualNetworks/connections@2023-04-01' = {
+  name: '${webAppName}-vnet-connection'
+  location: location
+  properties: {
+    vnetresourceId: webAppVnet.id
+    isSwift: true    
+  }
 }
 
 
@@ -146,23 +274,77 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   location: location
   sku: {
     name: sku
+    tier: sku
+    size: 'B1'
+    family: 'B'
+    capacity: 0
   }
   kind: 'linux'
   properties: {
+    perSiteScaling: false
+    elasticScaleEnabled: false
+    maximumElasticWorkerCount: 1
+    isSpot: false
     reserved: true
+    isXenon: false
+    hyperV: false
+    targetWorkerCount: 0
+    targetWorkerSizeId: 0
+    zoneRedundant: false
   }
 }
 
 resource webApp 'Microsoft.Web/sites@2024-04-01' = {
   name: webAppName
   location: location
+  kind: 'app, linux, container'
   properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: '${webAppName}.azurewebsites.net'
+        hostType: 'Standard'
+        sslState: 'Disabled'
+      }
+      {
+        name: '${webAppName}.scm.azurewebsites.net'
+        hostType: 'Repository'
+        sslState: 'Disabled'
+      }
+    ]
     serverFarmId: appServicePlan.id
+    reserved: true
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: true
+    vnetImagePullEnabled: false
     siteConfig: {
-      linuxFxVersion: 'NODE|20-lts'
-      alwaysOn: true                
+      numberOfWorkers: 1
+      linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${webAppName}:latest'
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: true
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1                
     }
-    publicNetworkAccess: 'Disabled'     
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: true
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: ''
+    containerSize: 0
+    dailyMemoryTimeQuota: 0
+    httpsOnly: false
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    storageAccountRequired: false
+    virtualNetworkSubnetId: webAppVnet.properties.subnets[0].id
+    identity: {
+      type: 'SystemAssigned'
+    }
   }
 }
 
@@ -189,9 +371,34 @@ resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' =
           groupIds: [
             'sites'
           ]
+          privateLinkServiceConnectionState: {
+            status: 'Approved'
+            description: 'Private endpoint connection approved.'
+            actionsRequired: 'None'
+          }
         }
       }
     ]
+    manualPrivateLinkServiceConnections: []
+    ipConfigurations: []
+    customDnsConfigs: []
+  }
+}
+
+resource webAppPrivateEndpointConnection 'Microsoft.Web/sites/privateEndpointConnections@2024-04-01' = {
+  parent: webApp
+  name: '${webAppName}-peconnection'
+  location: location
+  properties: {
+    privateLinkServiceConnectionState: {
+      status: 'Approved'
+      description: 'Private endpoint connection approved.'
+      actionsRequired: 'None'
+    }
+    ipAddress: 'allowIpRange'
+    privateEndpoint: {
+      id: webAppPrivateEndpoint.id
+    }
   }
 }
 
@@ -232,15 +439,54 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
   parent: webApp
   name: 'web'
   properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+      'hostingstart.html'
+    ]
+    netFrameworkVersion: 'v4.0'
+    linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${webAppName}:latest'
+    requestTracingEnabled: true
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: true
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 100
+    detailedErrorLoggingEnabled: true
+    publishingUsername: 'webapp'
+    scmType: 'None'
+    use32BitWorkerProcess: true
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetNamed: webAppVnet.name
     vnetRouteAllEnabled: true
-    publicNetworkAccess: 'Enabled'
+    vnetPrivatePortsCount: 0    
     ipSecurityRestrictions: [
       {
-        name: 'AllowVNet'
-        priority: 100
+        ipAddress: 'Any'
         action: 'Allow'
-        tag: 'Default'
-        vnetSubnetResourceId: webAppVnet.properties.subnets[0].id
+        priority: 2147483647
+        name: 'Allow all'
+        description: 'Allow all access'
       }
       {
         name: 'AllowAzureFrontDoor'
@@ -249,18 +495,25 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
         ipAddress: allowIpRange        
       }         
     ]
-    ipSecurityRestrictionsDefaultAction: 'Allow'
     scmIpSecurityRestrictions: [
       {
         ipAddress: 'Any'
-        action: 'Deny'
+        action: 'Allow'
         priority: 2147483647
-        name: 'Deny all'
-        description: 'Deny all access'
+        name: 'Allow all'
+        description: 'Allow all access'
       }
     ]
-    scmIpSecurityRestrictionsDefaultAction: 'Allow'
     scmIpSecurityRestrictionsUseMain: false
+    http20Enabled: true
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'Disabled'
+    preWarmedInstanceCount: 0
+    elasticWebAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
   }
 }
 
@@ -290,13 +543,9 @@ resource frontDoorOriginGroup 'Microsoft.Cdn/profiles/originGroups@2021-06-01' =
     loadBalancingSettings: {
       sampleSize: 4
       successfulSamplesRequired: 3
+      additionalLatencyInMilliseconds: 180
     }
-    healthProbeSettings: {
-      probePath: '/'
-      probeRequestType: 'HEAD'
-      probeProtocol: 'Http'
-      probeIntervalInSeconds: 100
-    }
+    sessionAffinityState: 'Disabled'
   }
 }
 
@@ -311,6 +560,15 @@ resource frontDoorOrigin 'Microsoft.Cdn/profiles/originGroups/origins@2021-06-01
     priority: 1
     weight: 1000
     enabledState: 'Enabled'
+    sharedPrivateLinkResource: {
+      privateLink: {
+        id: webAppPrivateEndpoint.id
+      }
+      groupId: 'sites'
+      privateLinkLocation: {
+        id: webAppPrivateEndpoint.id
+      }
+    }
     enforceCertificateNameCheck: true
   }  
 }
@@ -319,9 +577,16 @@ resource frontDoorRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' 
   name: '${frontDoorName}-route'
   parent: frontDoorEndpoint  
   properties: {
+    customDomains: [
+      {
+        id: frontDoorEndpoint.id        
+      }
+    ]
     originGroup: {
       id: frontDoorOriginGroup.id
     }
+    originPath: '/'
+    ruleSets: []
     supportedProtocols: [
       'Http'
       'Https'
@@ -332,6 +597,7 @@ resource frontDoorRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' 
     forwardingProtocol: 'HttpsOnly'
     linkToDefaultDomain: 'Enabled'
     httpsRedirect: 'Enabled'
+    enabledState: 'Enabled'
   }
   dependsOn: [
     frontDoorOrigin
