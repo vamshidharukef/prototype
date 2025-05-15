@@ -178,7 +178,7 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         name: 'subnet-webapp'
         id: 'subnet-webapp'
         properties: {
-          addressPrefix: allowIpRange
+          addressPrefix: vnetSubnetWebappPrefix
           routeTable: {
             id: webAppRouteTable.id
           }
