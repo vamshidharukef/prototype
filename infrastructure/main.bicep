@@ -103,11 +103,11 @@ resource registryRepositoryAdmin 'Microsoft.ContainerRegistry/registries/scopeMa
   properties: {
     description: 'Can perform all read, write and delete operations on the registry'
     actions: [
-      'repositories/webapp/repository/read'
-      'repositories/webapp/repository/write'
-      'repositories/webapp/repository/delete'
-      'repositories/webapp/repository/metadata/read'
-      'repositories/webapp/repository/metadata/write'
+      'repositories/*/metadata/read'
+      'repositories/*/metadata/write'
+      'repositories/*/content/read'
+      'repositories/*/content/write'
+      'repositories/*/content/delete'
     ]
   }  
 }
@@ -249,7 +249,8 @@ resource webAppRouteTable 'Microsoft.Network/routeTables@2023-04-01' = {
         name: 'route-to-webapp'
         id: 'route-to-webapp'
         properties: {
-          addressPrefix: vnetSubnetWebappPrefix                    
+          addressPrefix: vnetSubnetWebappPrefix
+          nextHopType: 'VirtualAppliance'                  
         }
       }
     ]
@@ -284,7 +285,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
 resource webApp 'Microsoft.Web/sites@2024-04-01' = {
   name: webAppName
   location: location
-  kind: 'app, linux, container'
+  kind: 'app,linux,container'
   identity: {
     type: 'SystemAssigned'
   }
@@ -380,11 +381,7 @@ resource webAppPrivateEndpointConnection 'Microsoft.Web/sites/privateEndpointCon
       status: 'Approved'
       description: 'Private endpoint connection approved.'
       actionsRequired: 'None'
-    }
-    ipAddresses: 'allowIpRange'
-    privateEndpoint: {
-      id: webAppPrivateEndpoint.id
-    }
+    }    
   }
 }
 
