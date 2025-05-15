@@ -152,7 +152,7 @@ resource registryRepositoryPullPush 'Microsoft.ContainerRegistry/registries/scop
 
 resource registryWebHook 'Microsoft.ContainerRegistry/registries/webhooks@2024-11-01-preview' = {
   parent: acrResource
-  name: 'webapp-webhook'
+  name: 'webappwebhook'
   location: location
   properties: {
     status: 'enabled'
@@ -181,7 +181,7 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         properties: {
           addressPrefix: vnetSubnetWebappPrefix
           routeTable: {
-            id: routeTable.id
+            id: webAppRouteTable.id
           }
           delegations: [
             {
@@ -204,7 +204,7 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         properties: {
           addressPrefix: vnetSubnetPrivatePrefix
           routeTable: {
-            id: routeTable.id
+            id: webAppRouteTable.id
           }
           delegations: []
           privateEndpointNetworkPolicies: 'Disabled'
@@ -223,7 +223,7 @@ resource webAppVnetSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01'
   properties: {
     addressPrefix: vnetSubnetWebappPrefix
     routeTable: {
-      id: routeTable.id
+      id: webAppRouteTable.id
     }
     delegations: [
       {
@@ -259,16 +259,6 @@ resource webAppRouteTable 'Microsoft.Network/routeTables@2023-04-01' = {
   }
 }
 
-resource webAppVnetVirtualNetworkConnection 'Microsoft.Network/virtualNetworks/connections@2023-04-01' = {
-  name: '${webAppName}-vnet-connection'
-  location: location
-  properties: {
-    vnetresourceId: webAppVnet.id
-    isSwift: true    
-  }
-}
-
-
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: appServicePlanName
   location: location
@@ -298,6 +288,9 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
   name: webAppName
   location: location
   kind: 'app, linux, container'
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     enabled: true
     hostNameSslStates: [
@@ -341,10 +334,7 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
     endToEndEncryptionEnabled: false
     redundancyMode: 'None'
     storageAccountRequired: false
-    virtualNetworkSubnetId: webAppVnet.properties.subnets[0].id
-    identity: {
-      type: 'SystemAssigned'
-    }
+    virtualNetworkSubnetId: webAppVnet.properties.subnets[0].id    
   }
 }
 
