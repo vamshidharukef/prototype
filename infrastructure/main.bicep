@@ -339,8 +339,7 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
 
 resource webAppFtps 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
   parent: webApp
-  name: 'ftp'
-  location: location
+  name: 'ftp'  
   properties: {
     allow: false
   }
@@ -348,8 +347,7 @@ resource webAppFtps 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024
 
 resource webAppScm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
   parent: webApp
-  name: 'scm'
-  location: location  
+  name: 'scm'    
   properties: {
     allow: false
   }
