@@ -381,7 +381,7 @@ resource webAppPrivateEndpointConnection 'Microsoft.Web/sites/privateEndpointCon
       description: 'Private endpoint connection approved.'
       actionsRequired: 'None'
     }
-    ipAddress: 'allowIpRange'
+    ipAddresses: 'allowIpRange'
     privateEndpoint: {
       id: webAppPrivateEndpoint.id
     }
@@ -553,11 +553,6 @@ resource frontDoorRoute 'Microsoft.Cdn/profiles/afdEndpoints/routes@2021-06-01' 
   name: '${frontDoorName}-route'
   parent: frontDoorEndpoint  
   properties: {
-    customDomains: [
-      {
-        id: frontDoorEndpoint.id        
-      }
-    ]
     originGroup: {
       id: frontDoorOriginGroup.id
     }
