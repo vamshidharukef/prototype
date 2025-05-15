@@ -159,7 +159,8 @@ resource registryWebHook 'Microsoft.ContainerRegistry/registries/webhooks@2024-1
     scope: 'webapp/*'
     actions: [
       'push'      
-    ]    
+    ]
+    serviceUrl: 'https://webapp.azurewebsites.net/api/webhook'  
   }  
 }
 
@@ -213,47 +214,6 @@ resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     ]
   }
   tags: tags
-}
-
-resource webAppVnetSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
-  parent: webAppVnet
-  name: 'subnet-webapp'
-  properties: {
-    addressPrefix: vnetSubnetWebappPrefix
-    routeTable: {
-      id: webAppRouteTable.id
-    }
-    delegations: [
-      {
-        name: 'webappDelegation'
-        id: 'webappDelegation'
-        properties: {
-          serviceName: 'Microsoft.Web/serverFarms'
-        }
-        type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
-      }
-    ]
-    privateEndpointNetworkPolicies: 'Disabled'
-    privateLinkServiceNetworkPolicies: 'Disabled'    
-  }
-}
-
-resource webAppRouteTable 'Microsoft.Network/routeTables@2023-04-01' = {
-  name: '${webAppName}-routeTable'
-  location: location
-  properties: {
-    disableBgpRoutePropagation: false
-    routes: [
-      {
-        name: 'route-to-webapp'
-        id: 'route-to-webapp'
-        properties: {
-          addressPrefix: vnetSubnetWebappPrefix
-          nextHopType: 'VnetLocal'                          
-        }
-      }
-    ]
-  }
 }
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
@@ -334,54 +294,6 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
     publicNetworkAccess: 'Enabled'
     virtualNetworkSubnetId: webAppVnet.properties.subnets[0].id    
   }
-}
-
-resource webAppFtps 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
-  parent: webApp
-  name: 'ftp'  
-  properties: {
-    allow: false
-  }
-}
-
-resource webAppScm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
-  parent: webApp
-  name: 'scm'    
-  properties: {
-    allow: false
-  }
-}
-
-resource webAppVnetIntegration 'Microsoft.Web/sites/networkConfig@2021-03-01' = {
-  parent: webApp
-  name: 'virtualNetwork'
-  properties: {
-    subnetResourceId: webAppVnet.properties.subnets[0].id
-  }
-}
-
-resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
-  name: '${webAppName}-pe'
-  location: location
-  properties: {
-    subnet: {
-      id: webAppVnet.properties.subnets[1].id 
-    }
-    privateLinkServiceConnections: [
-      {
-        name: '${webAppName}-plsc'
-        properties: {
-          privateLinkServiceId: webApp.id
-          groupIds: [
-            'sites'
-          ]          
-        }
-      }
-    ]
-    manualPrivateLinkServiceConnections: []
-    ipConfigurations: []
-    customDnsConfigs: []
-  }  
 }
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
