@@ -159,8 +159,7 @@ resource registryWebHook 'Microsoft.ContainerRegistry/registries/webhooks@2024-1
     scope: 'webapp/*'
     actions: [
       'push'      
-    ]
-    serviceUri: 'https://webapp.azurewebsites.net/api/webhook'
+    ]    
   }  
 }
 
