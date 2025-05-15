@@ -249,7 +249,8 @@ resource webAppRouteTable 'Microsoft.Network/routeTables@2023-04-01' = {
         name: 'route-to-webapp'
         id: 'route-to-webapp'
         properties: {
-          addressPrefix: vnetSubnetWebappPrefix                           
+          addressPrefix: vnetSubnetWebappPrefix
+          nextHopType: 'VnetLocal'                          
         }
       }
     ]
@@ -357,12 +358,7 @@ resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' =
           privateLinkServiceId: webApp.id
           groupIds: [
             'sites'
-          ]
-          privateLinkServiceConnectionState: {
-            status: 'Approved'
-            description: 'Private endpoint connection approved.'
-            actionsRequired: 'None'
-          }
+          ]          
         }
       }
     ]
@@ -370,18 +366,9 @@ resource webAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' =
     ipConfigurations: []
     customDnsConfigs: []
   }
-}
-
-resource webAppPrivateEndpointConnection 'Microsoft.Web/sites/privateEndpointConnections@2024-04-01' = {
-  parent: webApp
-  name: '${webAppName}-peconnection'
-  properties: {
-    privateLinkServiceConnectionState: {
-      status: 'Approved'
-      description: 'Private endpoint connection approved.'
-      actionsRequired: 'None'
-    }    
-  }
+  dependsOn: [
+    webApp
+  ]
 }
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
