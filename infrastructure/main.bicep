@@ -150,19 +150,6 @@ resource registryRepositoryPullPush 'Microsoft.ContainerRegistry/registries/scop
   }  
 }
 
-resource registryWebHook 'Microsoft.ContainerRegistry/registries/webhooks@2024-11-01-preview' = {
-  parent: acrResource
-  name: 'webappwebhook'
-  location: location
-  properties: {
-    status: 'enabled'
-    scope: 'webapp/*'
-    actions: [
-      'push'      
-    ]
-    serviceUri: 'https://webapp.azurewebsites.net/api/webhook'  
-  }  
-}
 
 resource webAppVnet 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: 'vnet-${webAppName}'

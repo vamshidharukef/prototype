@@ -1,4 +1,4 @@
-FROM node:18.0-alpine
+FROM node:18-alpine
 
 # Set the working directory
 WORKDIR /app
@@ -12,5 +12,8 @@ RUN npm ci
 # Copy the application source code
 COPY . .
 
+# Build the application
+RUN npm run build
+
 # Start the application
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
