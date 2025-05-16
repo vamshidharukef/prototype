@@ -1,8 +1,3 @@
 {
-  "serviceName": "Guarantee, Insurance, Financing Tracker",
-  "useAutocomplete": true,
-  "useAuth": true,
-  "useAutoStoreData": true,
-  "useMojFrontend": true
+  "serviceName": "Service name goes here"
 }
-

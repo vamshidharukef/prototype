@@ -1,29 +1,5 @@
 module.exports = {
-  // User details
-  userName: 'John', // Visible name on Inputter
-  userRole: 'Inputter',
-  fullName: 'John Smith',  // Visible fullName for header
-  
-  // Add any other global variables here
-  serviceName: 'Guarantee, Insurance, Financing Tracker',
-  departmentName: 'UK Export Finance'
+
+  // Insert values here
+
 }
-
-
-new MOJFrontend.FilterToggleButton({
-  bigModeMediaQuery: '(min-width: 48.063em)',
-  startHidden: true,
-  toggleButton: {
-    container: document.querySelector('.moj-action-bar__filter'),
-    showText: 'Show filter',
-    hideText: 'Hide filter',
-    classes: 'govuk-button--secondary'
-  },
-  closeButton: {
-    container: document.querySelector('.moj-filter__header-action'),
-    text: 'Close'
-  },
-  filter: {
-    container: document.querySelector('.moj-filter')
-  }
-})
