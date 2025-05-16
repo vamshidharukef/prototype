@@ -12,8 +12,5 @@ RUN npm ci
 # Copy the application source code
 COPY . .
 
-# Build the application
-RUN npm run build
-
 # Start the application
 CMD ["npm", "start"]

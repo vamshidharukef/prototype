@@ -14,7 +14,6 @@
     "jquery": "3.7.1",
     "notifications-node-client": "8.2.1"
   },
-  "devDependencies": {},
   "scripts": {
     "dev": "govuk-prototype-kit dev",
     "serve": "govuk-prototype-kit serve",
