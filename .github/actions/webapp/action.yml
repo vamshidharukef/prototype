@@ -68,7 +68,7 @@ runs:
       shell: bash
       run: |
           az acr update -n ${{ steps.acr_details.outputs.ACR_NAME }} --admin-enabled true
-          sleep 60
+          sleep 30
           
     - name: Generate ACR Credentials
       id: acr_creds
@@ -80,21 +80,13 @@ runs:
           echo "ACR_PASSWORD=$(echo $ACR_CREDS | jq -r .password)" >> $GITHUB_OUTPUT
           echo "::add-mask::$(echo $ACR_CREDS | jq -r .password)"
     
-    - name: Get ACR Access Token
-      id: acr_token
-      shell: bash
-      run: |
-          ACCESS_TOKEN=$(az acr login --name ${{ steps.acr_details.outputs.ACR_NAME }} --expose-token --output tsv --query accessToken)
-          echo "::add-mask::$ACCESS_TOKEN"
-          echo "ACR_ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_OUTPUT
-    
     - name: ACR 🔐
       uses: azure/docker-login@v2
       with:
         login-server: ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}
         username: ${{ steps.acr_creds.outputs.ACR_USERNAME }}
         password: ${{ steps.acr_creds.outputs.ACR_PASSWORD }}
-        registry-token: ${{ steps.acr_token.outputs.ACR_ACCESS_TOKEN }}
+        
     
     - name: Build and push image to ACR
       shell: bash
