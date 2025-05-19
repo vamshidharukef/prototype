@@ -351,10 +351,17 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
       }
       {
         name: 'AllowAzureFrontDoor'
-        priority: 100
+        priority: 101
         action: 'Allow'
         ipAddress: allowIpRange        
-      }         
+      }
+      {
+        ipAddress: 'AzureFrontDoor.Backend'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'test'
+      }        
     ]
     ipSecurityRestrictionsDefaultAction: 'Deny'
     scmIpSecurityRestrictions: [
@@ -468,7 +475,7 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
       rules: [
         {
           name: 'AllowByIpRange'
-          priority: 1
+          priority: 101
           enabledState: 'Enabled'
           ruleType: 'MatchRule'
           action: 'Allow'
@@ -481,6 +488,27 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
               ]
             }
           ]
+        }
+        {
+          name: 'denyforpublic'
+          enabledState: 'Enabled'
+          priority: 100
+          ruleType: 'MatchRule'
+          rateLimitDurationInMinutes: 1
+          rateLimitThreshold: 100
+          matchConditions: [
+            {
+              matchVariable: 'RemoteAddr'
+              operator: 'IPMatch'
+              negateCondition: true
+              matchValue: [
+                allowIpRange
+              ]
+              transforms: []
+            }
+          ]
+          action: 'Block'
+          groupBy: []
         }
       ]
     }
