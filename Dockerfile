@@ -13,4 +13,5 @@ RUN npm ci
 COPY . .
 
 # Start the application
-CMD ["npm", "start", "dev"]
+ENTRYPOINT ["npm", "run"]
+CMD ["dev"]
