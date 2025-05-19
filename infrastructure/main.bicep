@@ -56,6 +56,9 @@ param vnetSubnetWebappPrefix string
 @description('Private Endpoint Subnet address prefix (e.g., 10.0.2.0/24)')
 param vnetSubnetPrivatePrefix string
 
+@description('The tag of the Docker image to deploy')
+param imageTag string
+
 @description('Allows IP address')
 param allowIpRange string
 
@@ -252,7 +255,7 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
     vnetImagePullEnabled: false
     siteConfig: {
       numberOfWorkers: 1
-      linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${webAppName}:latest'
+      linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${webAppName}:${imageTag}'
       acrUseManagedIdentityCreds: false
       alwaysOn: true
       http20Enabled: true
@@ -312,7 +315,7 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
       'hostingstart.html'
     ]
     netFrameworkVersion: 'v4.0'
-    linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${webAppName}:latest'
+    linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${webAppName}:${imageTag}'
     requestTracingEnabled: true
     remoteDebuggingEnabled: false
     httpLoggingEnabled: true

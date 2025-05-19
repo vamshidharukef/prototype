@@ -40,7 +40,10 @@
       },
       "allowIpRange": {
         "value": "{{ALLOWED_IP_RANGES}}"
-      },      
+      },
+      "imageTag": {
+        "value": ""
+      },     
       "tags": {
         "value": {}
     }
