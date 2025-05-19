@@ -257,6 +257,10 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
       numberOfWorkers: 1
       linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${webAppName}:${imageTag}'
       acrUseManagedIdentityCreds: false
+      appSettings: [
+        name: 'DOCKER_CUSTOM_IMAGE_NAME'
+        value: '${acrName}.azurecr.io/${webAppName}:${imageTag}'
+    ]
       alwaysOn: true
       http20Enabled: true
       functionAppScaleLimit: 0
