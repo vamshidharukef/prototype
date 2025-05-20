@@ -34,10 +34,7 @@ inputs:
     required: true
   version:
     description: 'Version'
-    required: true
-  acr:
-    description: 'Azure container registry password'
-    required: false
+    required: true  
   webapp:
     description: 'Azure WebApp name'
     required: true  
