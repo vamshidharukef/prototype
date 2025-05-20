@@ -35,6 +35,12 @@ inputs:
   version:
     description: 'Version'
     required: true
+  acr:
+    description: 'Azure container registry password'
+    required: true
+  webapp:
+    description: 'Azure WebApp name'
+    required: true  
 
 runs:
   using: "composite"
@@ -56,41 +62,25 @@ runs:
       with:
         creds: ${{ inputs.azure-credentials }}
 
-    - name: Get ACR Details
-      id: acr_details
-      shell: bash
-      run: |
-          ACR_NAME=$(az acr list --resource-group ${{ inputs.resource-group }} --query "[0].name" -o tsv)
-          echo "ACR_NAME=$ACR_NAME" >> $GITHUB_OUTPUT
-          echo "ACR_LOGIN_SERVER=$ACR_NAME.azurecr.io" >> $GITHUB_OUTPUT
     
-    - name: Enable ACR Admin User
-      shell: bash
+    - name: CLI 📝
       run: |
-          az acr update -n ${{ steps.acr_details.outputs.ACR_NAME }} --admin-enabled true
-          sleep 30
-          
-    - name: Generate ACR Credentials
-      id: acr_creds
+        echo ACR=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query loginServer -o tsv) >> $GITHUB_ENV
+        echo ACR_USER=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query name -o tsv) >> $GITHUB_ENV
+        echo WEBAPP=$(az resource list --resource-type 'Microsoft.Web/sites' --query '[?contains(name, `${{ inputs.webapp }}`)].name' -o tsv) >> $GITHUB_ENV
       shell: bash
-      run: |
-          ACR_CREDS=$(az acr credential show --name ${{ steps.acr_details.outputs.ACR_NAME }} --resource-group ${{ inputs.resource-group }} --query "{username:username, password:passwords[0].value}" -o json)
-          echo "ACR_USERNAME=$(echo $ACR_CREDS | jq -r .username)" >> $GITHUB_OUTPUT
-          echo "::add-mask::$(echo $ACR_CREDS | jq -r .username)"
-          echo "ACR_PASSWORD=$(echo $ACR_CREDS | jq -r .password)" >> $GITHUB_OUTPUT
-          echo "::add-mask::$(echo $ACR_CREDS | jq -r .password)"
     
     - name: ACR 🔐
       uses: azure/docker-login@v2
       with:
-        login-server: ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}
-        username: ${{ steps.acr_creds.outputs.ACR_USERNAME }}
-        password: ${{ steps.acr_creds.outputs.ACR_PASSWORD }}
+        login-server: ${{ env.ACR_NAME }}
+        username: ${{ env.ACR_USER }}
+        password: ${{ inputs.acr }}
         
     
     - name: Build and push image to ACR
       shell: bash
       run: |
           cd ${{ github.workspace }}
-          docker build . -t ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
-          docker push ${{ steps.acr_details.outputs.ACR_LOGIN_SERVER }}/${{ inputs.image-name }}:${{ inputs.image-tag }}
+          docker build . -t ${{ env.ACR_NAME }}/${{ inputs.webapp }}:${{ github.sha }}
+          docker push ${{ env.ACR_NAME }}/${{ inputs.webapp }}:${{ github.sha }}
