@@ -38,12 +38,9 @@ inputs:
   webapp:
     description: 'Azure WebApp name'
     required: true
-  client-id:
-    description: 'Azure Service Principal Client ID'
-    required: true
-  client-secret:
-    description: 'Azure Service Principal Client Secret'
-    required: true    
+  acr:
+    description: 'Azure container registry password'
+    required: true   
 
 runs:
   using: "composite"
@@ -68,8 +65,8 @@ runs:
     
     - name: CLI 📝
       run: |
-        ACR_NAME=$(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv)
-        echo ACR=$(az acr show -n $ACR_NAME --query loginServer -o tsv) >> $GITHUB_ENV
+        echo ACR=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query loginServer -o tsv) >> $GITHUB_ENV
+        echo ACR_USER=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query name -o tsv) >> $GITHUB_ENV
         echo WEBAPP=$(az resource list --resource-type 'Microsoft.Web/sites' --query '[?contains(name, `${{ inputs.webapp }}`)].name' -o tsv) >> $GITHUB_ENV
       shell: bash
     
@@ -77,8 +74,8 @@ runs:
       uses: azure/docker-login@v2
       with:
         login-server: ${{ env.ACR }}
-        username: ${{ inputs.client-id }}
-        password: ${{ inputs.client-secret }}
+        username: ${{ env.ACR_USER }}
+        password: ${{ inputs.acr }}
         
     
     - name: Build and push image to ACR

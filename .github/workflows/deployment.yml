@@ -91,8 +91,7 @@ jobs:
           acr-name: ${{ env.ACR_NAME }}
           image-name: ${{ matrix.webapp }}
           image-tag: ${{ github.sha }}
-          client-id: ${{ secrets.AZURE_CREDENTIALS.clientId }}
-          client-secret: ${{ secrets.AZURE_CREDENTIALS.clientSecret }}
+          acr: ${{ secrets.ACR_PASSWORD }}
 
           
 
