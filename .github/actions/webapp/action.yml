@@ -75,6 +75,10 @@ runs:
         password: ${{ inputs.acr }}
         
     
+    - name: Wait for Authentication
+      run: sleep 30
+      shell: bash
+    
     - name: Build and push image to ACR
       shell: bash
       run: |
