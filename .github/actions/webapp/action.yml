@@ -35,9 +35,6 @@ inputs:
   version:
     description: 'Version'
     required: true  
-  webapp:
-    description: 'Azure WebApp name'
-    required: true
   acr:
     description: 'Azure container registry password'
     required: true   
@@ -82,5 +79,5 @@ runs:
       shell: bash
       run: |
           cd ${{ github.workspace }}
-          docker build . -t ${{ env.ACR_NAME }}/${{ inputs.webapp }}:${{ github.sha }}
-          docker push ${{ env.ACR_NAME }}/${{ inputs.webapp }}:${{ github.sha }}
+          docker build . -t ${{ env.ACR_NAME }}/${{ inputs.app-name }}:${{ github.sha }}
+          docker push ${{ env.ACR_NAME }}/${{ inputs.app-name }}:${{ github.sha }}
