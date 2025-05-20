@@ -79,5 +79,5 @@ runs:
       shell: bash
       run: |
           cd ${{ github.workspace }}
-          docker build . -t ${{ env.ACR_NAME }}/${{ inputs.app-name }}:${{ github.sha }}
-          docker push ${{ env.ACR_NAME }}/${{ inputs.app-name }}:${{ github.sha }}
+          docker build . -t ${{ env.ACR }}/${{ inputs.app-name }}:${{ github.sha }}
+          docker push ${{ env.ACR }}/${{ inputs.app-name }}:${{ github.sha }}
