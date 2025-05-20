@@ -37,7 +37,13 @@ inputs:
     required: true  
   webapp:
     description: 'Azure WebApp name'
-    required: true  
+    required: true
+  client-id:
+    description: 'Azure Service Principal Client ID'
+    required: true
+  client-secret:
+    description: 'Azure Service Principal Client Secret'
+    required: true    
 
 runs:
   using: "composite"
@@ -72,8 +78,8 @@ runs:
       uses: azure/docker-login@v2
       with:
         login-server: ${{ env.ACR }}
-        username: ${{ secrets.AZURE_CREDENTIALS.clientId }}
-        password: ${{ secrets.AZURE_CREDENTIALS.clientSecret }}
+        username: ${{ inputs.client-id }}
+        password: ${{ inputs.client-secret }}
         
     
     - name: Build and push image to ACR
