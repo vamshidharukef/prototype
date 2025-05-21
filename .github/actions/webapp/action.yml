@@ -74,6 +74,12 @@ runs:
         username: ${{ env.ACR_USER }}
         password: ${{ inputs.acr }}
         
+    - name: Check ACR Credentials
+      run: |
+        az acr login -n ${{ env.ACR_USER }}
+        az acr repository list -n ${{ env.ACR_USER }}
+      shell: bash
+    
     - name: Build and push image to ACR
       shell: bash
       run: |
