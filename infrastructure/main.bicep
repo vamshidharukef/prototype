@@ -255,7 +255,7 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
     vnetImagePullEnabled: false
     siteConfig: {
       numberOfWorkers: 1
-      linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${webAppName}:${github.sha}'
+      linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${webAppName}:${imageTag}'
       acrUseManagedIdentityCreds: false
       appSettings: [
         {
@@ -321,7 +321,7 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
       'hostingstart.html'
     ]
     netFrameworkVersion: 'v4.0'
-    linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${webAppName}:${github.sha}'
+    linuxFxVersion: 'DOCKER|${acrName}.azurecr.io/${webAppName}:${imageTag}'
     requestTracingEnabled: true
     remoteDebuggingEnabled: false
     httpLoggingEnabled: true
