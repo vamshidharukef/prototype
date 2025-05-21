@@ -74,20 +74,10 @@ runs:
         username: ${{ env.ACR_USER }}
         password: ${{ inputs.acr }}
         
-    
-    - name: Wait for Authentication
-      run: sleep 60
-      shell: bash
-    
-    - name: Check ACR Credentials
-      run: |
-        az acr login -n ${{ env.ACR_USER }}
-        az acr repository list -n ${{ env.ACR_USER }}
-      shell: bash
-    
     - name: Build and push image to ACR
       shell: bash
       run: |
           cd ${{ github.workspace }}
           docker build . -t ${{ env.ACR }}/${{ inputs.app-name }}:${{ github.sha }}
           docker push ${{ env.ACR }}/${{ inputs.app-name }}:${{ github.sha }}
+          docker push ${{ env.ACR }}/${{ inputs.app-name }}:latest
