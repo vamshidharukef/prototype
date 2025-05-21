@@ -102,7 +102,12 @@ jobs:
           az webapp config appsettings set `
             --name ${{ matrix.webapp }} `
             --resource-group rg-${{ env.PRODUCT }}--${{ vars.VERSION }} `
-            --linux-fx-version "DOCKER|${{ env.ACR_NAME }}.azurecr.io/${{ matrix.webapp }}:${{ github.sha }}"
             --settings `
             TZ='${{ vars.TIMEZONE }}' `
-            NODE_ENV='${{ vars.NODE_ENV }}'            
+            NODE_ENV='${{ vars.NODE_ENV }}'
+            DOCKER_CUSTOM_IMAGE_NAME='${{ env.ACR_NAME }}.azurecr.io/${{ matrix.webapp }}:${{ github.sha }}'
+
+          az webapp config set `
+            --name ${{ matrix.webapp }} `
+            --resource-group rg-${{ env.PRODUCT }}--${{ vars.VERSION }} `
+            --linux-fx-version "DOCKER|${{ env.ACR_NAME }}.azurecr.io/${{ matrix.webapp }}:${{ github.sha }}"       
