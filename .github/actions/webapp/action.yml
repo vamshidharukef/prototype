@@ -76,7 +76,19 @@ runs:
         
     
     - name: Wait for Authentication
-      run: sleep 30
+      run: sleep 60
+      shell: bash
+    
+    - name: Verify Docker Login
+      run: |
+        docker login ${{ env.ACR }} -u ${{ env.ACR_USER }} -p ${{ inputs.acr }}
+        echo "Docker login status: $?"
+      shell: bash
+    
+    - name: Check ACR Credentials
+      run: |
+        az acr login -n ${{ env.ACR_USER }}
+        az acr repository list -n ${{ env.ACR_USER }}
       shell: bash
     
     - name: Build and push image to ACR
