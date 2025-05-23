@@ -85,5 +85,5 @@ runs:
       run: |
         az webapp config container set --name ${{ env.WEBAPP }} --resource-group ${{ inputs.resource-group }} \
           --docker-custom-image-name ${{ env.ACR }}/${{ inputs.app-name }}:${{ github.sha }} \
-          --docker-registry-url https://${{ env.ACR }}
+          --docker-registry-server-url https://${{ env.ACR }}
       shell: bash                         
