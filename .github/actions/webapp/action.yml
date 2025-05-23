@@ -79,4 +79,11 @@ runs:
           docker build . -t ${{ env.ACR }}/${{ inputs.app-name }}:${{ github.sha }}
           docker build . -t ${{ env.ACR }}/${{ inputs.app-name }}:latest
           docker push ${{ env.ACR }}/${{ inputs.app-name }}:latest
-          docker push ${{ env.ACR }}/${{ inputs.app-name }}:${{ github.sha }}                    
+          docker push ${{ env.ACR }}/${{ inputs.app-name }}:${{ github.sha }}
+
+    - name: Update Web App Container Settings 🔄
+      run: |
+        az webapp config container set --name ${{ env.WEBAPP }} --resource-group ${{ inputs.resource-group }} \
+          --docker-custom-image-name ${{ env.ACR }}/${{ inputs.app-name }}:${{ github.sha }} \
+          --docker-registry-server-url https://${{ env.ACR }}
+      shell: bash                         
