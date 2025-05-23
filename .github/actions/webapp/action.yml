@@ -67,12 +67,12 @@ runs:
         echo WEBAPP=$(az resource list --resource-type 'Microsoft.Web/sites' --query '[?contains(name, `${{ inputs.webapp }}`)].name' -o tsv) >> $GITHUB_ENV
       shell: bash
     
-    - name: Verify ACR Login
+    - name: ACR Login 🔐
       run: |
         az acr login -n ${{ env.ACR_USER }}
       shell: bash
     
-    - name: Build and push image to ACR
+    - name: Build and push Docker image 🗃️
       shell: bash
       run: |
           cd ${{ github.workspace }}
