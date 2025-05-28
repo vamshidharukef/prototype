@@ -77,9 +77,8 @@ runs:
     
     - name: Build and push Docker image 🗃️
       shell: bash
-      working-directory: src/${{ inputs.webapp }}
+      working-directory: ${{ github.workspace }}
       run: |
-          cd ${{ github.workspace }}
           docker build . -t ${{ env.ACR }}/${{ inputs.app-name }}:${{ github.sha }}
           docker build . -t ${{ env.ACR }}/${{ inputs.app-name }}:latest
           docker push ${{ env.ACR }}/${{ inputs.app-name }}:latest
