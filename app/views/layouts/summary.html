@@ -1,0 +1,163 @@
+{% extends "govuk-prototype-kit/layouts/govuk-branded.njk" %}
+
+{% block header %}
+
+
+
+<header class="moj-header moj-header--docs" role="banner">
+  <div class="moj-header__container">
+    <div class="moj-header__logo">
+
+      <a href="/" class="moj-header__logo-link" aria-label="UKEF homepage">
+        <img src="/public/images/ukef_3x.png" role="presentation" class="moj-header__logotype" alt="UKEF" height="47"
+          width="59">
+      </a>
+
+      <a class="moj-header__link" href="/">
+        <span class="moj-header__link--organisation-name">Guarantee, Insurance, Financing Tracker</span>
+
+
+
+      </a>
+    </div>
+    <div class="moj-header__content">
+      <nav class="moj-header__navigation" aria-label="Account navigation">
+        <ul class="moj-header__navigation-list">
+          <li class="moj-header__navigation-item">
+            <a class="moj-header__navigation-link" href="#">{{ data['fullName'] if data['fullName'] else 'John Smith'
+              }}</a>
+
+          </li>
+          <li class="moj-header__navigation-item">
+            <a class="moj-header__navigation-link" href="#">Sign out</a>
+          </li>
+        </ul>
+      </nav>
+
+    </div>
+
+
+
+  </div>
+</header>
+
+{# Phase banner #}
+<div class="govuk-phase-banner govuk-width-container govuk-!-padding-top-0 govuk-!-margin-top-0">
+  <p class="govuk-phase-banner__content">
+    <strong class="govuk-tag govuk-phase-banner__content__tag">
+      beta
+    </strong>
+    <span class="govuk-phase-banner__text">
+      This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+    </span>
+  </p>
+  
+</div>
+
+
+
+
+
+
+<div class="moj-primary-navigation" style="display: none;">
+
+  <div class="moj-primary-navigation__container">
+
+    <div class="moj-primary-navigation__nav">
+
+      <nav class="moj-primary-navigation" aria-label="Primary navigation">
+
+        <ul class="moj-primary-navigation__list">
+          <li class="moj-primary-navigation__item">
+            <a class="moj-primary-navigation__link" aria-current="page" href="#1">Nav item 1</a>
+          </li>
+
+          <li class="moj-primary-navigation__item">
+            <a class="moj-primary-navigation__link" href="#2">Nav item 2</a>
+          </li>
+
+          <li class="moj-primary-navigation__item">
+            <a class="moj-primary-navigation__link" href="#3">Nav item 3</a>
+          </li>
+        </ul>
+
+      </nav>
+
+      
+
+    </div>
+    
+  </div>
+  
+
+</div>
+
+
+
+<br />
+<div class="govuk-width-container" style="background-color: #1D70B8; ">
+  <style>
+    /* Change font color to white and remove border width for tables */
+    .govuk-table {
+      color: #FFF; /* Set font color to white */
+      border-width: 0; /* Remove border width */
+      font-size: 19px;
+    }
+
+    .govuk-table__header, .govuk-table__cell  {
+     
+      border-width: 0; /* Remove border width */
+    }
+  </style>
+  <table style="width: 100%; padding: 10px;">
+    <tr>
+
+      <td>
+        <table class="govuk-table" style="margin-bottom: 0px !important;">
+          
+          
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header" style="width: 200px;">Status</th>
+              <td class="govuk-table__cell">
+                <strong class="govuk-tag" style="background-color:#D2E2F1; color: #005DA6;">
+                Draft
+              </strong>
+            </td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">Creation date</th>
+              <td class="govuk-table__cell">01 October 2024</td>
+            </tr>
+          
+          </tbody>
+        </table>
+      </td>
+
+      <td>
+        <table class="govuk-table" style="margin-bottom: 0px !important;">
+         
+          
+          
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header" style="width: 200px;">Record created by</th>
+              <td class="govuk-table__cell"><a href="#" style="color: #FFF;">Michael Burnett</a></td>
+            </tr>
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">Last changed by</th>
+              <td class="govuk-table__cell"><a href="#" style="color: #FFF;">Adam Green</a></td>
+            </tr>
+           
+          </tbody>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+  
+</div>
+
+
+
+{% endblock %}

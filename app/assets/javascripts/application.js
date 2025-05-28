@@ -1,8 +1,8 @@
-//
-// For guidance on how to add JavaScript see:
-// https://prototype-kit.service.gov.uk/docs/adding-css-javascript-and-images
-//
+window.GOVUKFrontend.initAll();
+window.MOJFrontend.initAll();
 
-window.GOVUKPrototypeKit.documentReady(() => {
-  // Add JavaScript here
-})
+
+// ... existing code ...
+
+// Initialize MOJ date picker
+new MOJFrontend.Init().initAll();

@@ -1,0 +1,143 @@
+{% extends "layouts/summary.html" %}
+
+{% block pageTitle %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+
+    <h1 class="govuk-heading-l">
+      Rekey facility details
+    </h1>
+
+    <form class="form" action="review-entered-details" method="get">
+
+      <p>
+
+
+
+      <div class="govuk-form-group">
+
+        <h3 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--s" for="fname">
+            Facility ID
+          </label>
+        </h3>
+     
+        <input class="govuk-input govuk-input--width-10" id="fID" name="fID" type="text">
+
+
+      </div>
+
+      <div class="govuk-form-group">
+
+        <h3 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--s" for="fname">
+            Product type
+          </label>
+        </h3>
+     
+        <input class="govuk-input govuk-input--width-20" id="pType" name="pType" type="text">
+
+
+      </div>
+
+      <div class="govuk-form-group">
+
+        <h3 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--s" for="fname">
+            Obligor URN
+          </label>
+        </h3>
+     
+        <input class="govuk-input govuk-input--width-10" id="oUrn" name="oUrn" type="text">
+
+
+      </div>
+
+      <div class="govuk-form-group">
+
+        <h3 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--s" for="currency">
+            Currency and amount
+          </label>
+        </h3>
+
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <select class="govuk-select govuk-input--width-5" id="currency" name="currency"
+            aria-describedby="currency-hint" style="width: 80px !important; min-width: 80px !important;">
+            <option value="GBP" selected>GBP</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="JPY">JPY</option>
+          </select>
+
+          <input class="govuk-input govuk-input--width-10" id="" name="" type="text">
+        </div>
+      </div>
+
+      <div class="moj-datepicker" data-module="moj-date-picker">
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="effdate">
+            Effective date
+          </label>
+
+          <div id="date-hint" class="govuk-hint">
+            For example, 17/5/2025.
+          </div>
+
+          <input class="govuk-input moj-js-datepicker-input govuk-input--width-10 govuk-input--extra-letter-spacing" id="effdate" name="effdate" type="text"
+            aria-describedby="date-hint" autocomplete="off">
+
+        </div>
+
+      </div>
+
+      <div class="moj-datepicker" data-module="moj-date-picker">
+
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="expdate">
+            Expiry date
+          </label>
+
+          <div id="date-hint" class="govuk-hint">
+            For example, 17/5/2025.
+          </div>
+
+          <input class="govuk-input moj-js-datepicker-input govuk-input--width-10 govuk-input--extra-letter-spacing" id="expdate" name="expdate" type="text"
+            aria-describedby="date-hint" autocomplete="off">
+
+        </div>
+
+      </div>
+
+    
+
+      </p>
+      <br /> <br />
+
+
+      
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button " data-module="govuk-button">
+          Continue
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+
+{% endblock %}

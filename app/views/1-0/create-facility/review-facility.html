@@ -1,0 +1,389 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+Review facility
+{% endblock %}
+
+{% block beforeContent %}
+{{ govukBackLink({
+text: "Back",
+href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="">
+
+    <h1 class="govuk-heading-l">
+      Review facility
+    </h1>
+
+    <form class="form" action="/path/of/next/page" method="post">
+
+      <p>
+
+
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Facility details
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> key information</span></a>
+            </li>
+
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Product type
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Export Insurance Policy (EXIP) </dd>
+
+            </div>
+
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Facility ID
+              </dt>
+              <dd class="govuk-summary-list__value">
+                0123456789
+              </dd>
+
+            </div>
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Facility description
+              </dt>
+              <dd class="govuk-summary-list__value">
+                SBLG / 0 - 26
+              </dd>
+
+            </div>
+
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Obligor
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Universal LTD. <br />
+                0012345678
+              </dd>
+
+
+
+            </div>
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Currency and amount
+              </dt>
+              <dd class="govuk-summary-list__value">
+                GBP 2,000,000
+              </dd>
+
+            </div>
+
+
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Effective date
+              </dt>
+              <dd class="govuk-summary-list__value">
+                15 July 2024
+              </dd>
+
+            </div>
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Expiry date
+              </dt>
+              <dd class="govuk-summary-list__value">
+                13 October 2024
+              </dd>
+
+            </div>
+
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                End of cover date
+              </dt>
+              <dd class="govuk-summary-list__value">
+                13 October 2024
+              </dd>
+
+            </div>
+
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Deal ID
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Enter deal ID
+              </dd>
+
+            </div>
+
+
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Revolving?
+              </dt>
+              <dd class="govuk-summary-list__value">
+                No
+              </dd>
+
+            </div>
+
+
+
+
+          </dl>
+        </div>
+      </div>
+
+
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Repayments
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Change<span class="govuk-visually-hidden">repayments</span></a>
+            </li>
+
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Profile name
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Lorem Ipsum
+              </dd>
+
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Dates
+              </dt>
+              <dd class="govuk-summary-list__value">
+                31 October 2024 <br /> <br />
+
+                30 November 2024 <br /> <br />
+
+                30 December 2024
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                GBP 10,000.00 <br /> <br />
+
+                GBP 10,000.00 <br /> <br />
+
+                GBP 10,000.00
+              </dd>
+            </div>
+
+          </dl>
+        </div>
+      </div>
+
+
+
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Counter party
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"></span></a>
+            </li>
+
+          </ul>
+        </div>
+
+
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Party name
+              </dt>
+              <dd class="govuk-summary-list__value">
+                STYLE COMMERCE LTD
+              </dd>
+
+            </div>
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Party URN
+              </dt>
+              <dd class="govuk-summary-list__value">
+                001122334
+              </dd>
+
+            </div>
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Role
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Exporter
+              </dd>
+
+            </div>
+
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Start date
+              </dt>
+              <dd class="govuk-summary-list__value">
+                15 July 2024
+              </dd>
+
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                End date
+              </dt>
+              <dd class="govuk-summary-list__value">
+                13 October 2024
+              </dd>
+
+            </div>
+
+
+          </dl>
+        </div>
+
+      </div>
+
+
+
+      <!-- Start of new card -->
+
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Obligations
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"></span></a>
+            </li>
+
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Currency and amount
+              </dt>
+              <dd class="govuk-summary-list__value">
+                GBP 35,000
+              </dd>
+             
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Effective date
+              </dt>
+              <dd class="govuk-summary-list__value">
+                31 August 2024
+              </dd>
+              
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Maturity date
+              </dt>
+              <dd class="govuk-summary-list__value">
+                31 November 2024
+              </dd>
+             
+            </div>
+            <div class="govuk-summary-list__row"></div>
+              <dt class="govuk-summary-list__key">
+                Product subtype
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Streamline 100k
+              </dd>
+             
+            </div>
+          </dl>
+        </div>
+      </div>
+      <!-- End of new card-->
+
+      <div class="govuk-summary-card">
+        <div class="govuk-summary-card__title-wrapper">
+          <h2 class="govuk-summary-card__title">
+            Fixed Fees
+          </h2>
+          <ul class="govuk-summary-card__actions">
+            <li class="govuk-summary-card__action">
+              <a class="govuk-link" href="#">Add<span class="govuk-visually-hidden"></span></a>
+            </li>
+
+          </ul>
+        </div>
+        <div class="govuk-summary-card__content">
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                <strong>No fixed fees added</strong>
+              </dt>
+             
+            </div>
+
+
+            
+            
+          </dl>
+        </div>
+      </div>
+
+
+      </p>
+      <br /> <br />
+      <div class="govuk-button-group">
+        <button type="submit" disabled aria-disabled="true" class="govuk-button " data-module="govuk-button">
+          Submit for approval
+        </button>
+        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          Return to all sections
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

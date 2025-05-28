@@ -1,6 +1,91 @@
-{#
-For guidance on how to use layouts see:
-https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
-#}
 
 {% extends "govuk-prototype-kit/layouts/govuk-branded.njk" %}
+
+{% block header %}
+
+
+
+<header class="moj-header moj-header--docs" role="banner">
+  <div class="moj-header__container">
+    <div class="moj-header__logo">
+     
+      <a href="/" class="moj-header__logo-link" aria-label="UKEF homepage">
+        <img src="/public/images/ukef_3x.png" 
+             role="presentation" 
+             class="moj-header__logotype" 
+             alt="UKEF"
+             height="47"
+             width="59">
+      </a>
+
+      <a class="moj-header__link" href="/">
+        
+        <span class="moj-header__link--organisation-name">Guarantee, Insurance, Financing Tracker</span>
+       
+
+       
+      </a>
+    </div>
+    <div class="moj-header__content">
+      <nav class="moj-header__navigation" aria-label="Account navigation">
+        <ul class="moj-header__navigation-list">
+          <li class="moj-header__navigation-item">
+            <a class="moj-header__navigation-link" href="#">{{ data['fullName'] if data['fullName'] else 'John Smith' }}</a>
+
+          </li>
+          <li class="moj-header__navigation-item">
+            <a class="moj-header__navigation-link" href="#">Sign out</a>
+          </li>
+        </ul>
+      </nav>
+
+    </div>
+
+   
+
+  </div>
+</header>
+
+{# Phase banner #}
+<div class="govuk-phase-banner govuk-width-container govuk-!-padding-top-0 govuk-!-margin-top-0">
+  <p class="govuk-phase-banner__content">
+    <strong class="govuk-tag govuk-phase-banner__content__tag">
+      beta
+    </strong>
+    <span class="govuk-phase-banner__text">
+      This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
+    </span>
+  </p>
+</div>
+
+<div class="moj-primary-navigation" style="display: none;">
+
+  <div class="moj-primary-navigation__container">
+
+    <div class="moj-primary-navigation__nav">
+
+      <nav class="moj-primary-navigation" aria-label="Primary navigation">
+
+        <ul class="moj-primary-navigation__list">
+          <li class="moj-primary-navigation__item">
+            <a class="moj-primary-navigation__link" aria-current="page" href="#1">Nav item 1</a>
+          </li>
+
+          <li class="moj-primary-navigation__item">
+            <a class="moj-primary-navigation__link" href="#2">Nav item 2</a>
+          </li>
+
+          <li class="moj-primary-navigation__item">
+            <a class="moj-primary-navigation__link" href="#3">Nav item 3</a>
+          </li>
+        </ul>
+
+      </nav>
+
+    </div>
+  </div>
+
+</div>
+
+
+{% endblock %}

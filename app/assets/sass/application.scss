@@ -1,6 +1,216 @@
-//
-// For guidance on how to add CSS and SCSS see:
-// https://prototype-kit.service.gov.uk/docs/adding-css-javascript-and-images
-// 
+$moj-assets-path: "/extension-assets/moj/assets/";
 
-// Add extra styles here
+// Import MOJ Frontend
+@import "../../../node_modules/@ministryofjustice/frontend/moj/all";
+
+// Custom header styles
+.moj-header {
+  background-color: #0b0c0c;
+  padding: 10px 0;
+}
+
+.moj-header__container {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 0 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.moj-header__logo {
+  display: flex;
+  align-items: center;
+}
+
+.moj-header__link {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  text-decoration: none;
+}
+
+.moj-header__organisation-name {
+  color: #ffffff;
+  font-size: 21px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.moj-header__service-name {
+  color: #ffffff;
+  font-size: 19px;
+  margin-top: 5px;
+}
+
+.moj-header__navigation-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+
+.moj-header__navigation-item {
+  margin-right: 20px;
+}
+
+.moj-header__navigation-link {
+  color: #ffffff;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+  &[aria-current="page"] {
+    text-decoration: underline;
+  }
+}
+
+// Custom styles for UKEF logo
+.moj-header__logotype {
+    margin-right: 10px;
+    // Add filter to make the logo white if needed
+    // filter: brightness(0) invert(1);
+  }
+  
+  // Adjust the logo container if needed
+  .moj-header__logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  // Header container styles
+.moj-header__container {
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 0 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  // Navigation styles
+  .moj-header__content {
+    margin-left: auto; // Pushes content to the right
+  }
+  
+  .moj-header__navigation {
+    display: flex;
+    justify-content: flex-end; // Aligns items to the right
+  }
+  
+  .moj-header__navigation-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 20px; // Space between navigation items
+  }
+  
+  .moj-header__navigation-link {
+    color: #ffffff;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // Override GOV.UK width container
+.govuk-width-container {
+    max-width: 1920px !important;
+    margin: 0 auto;
+    padding: 0 50px;
+  }
+  
+  // If you need to override specific breakpoints
+  @media (min-width: 40.0625em) {
+    .govuk-width-container {
+      margin: 0 auto;
+      padding: 0 50px;
+    }
+  }
+  
+  // For any nested containers that need the same width
+  .app-width-container,
+  .moj-width-container {
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 0 50px;
+  }
+  
+  // Ensure header container matches
+  .moj-header__container {
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 0 50px;
+  }
+
+  // Logo link styles
+.moj-header__logo-link {
+    display: inline-block;
+    text-decoration: none;
+    margin-right: 10px;
+  
+    &:focus {
+      outline: 3px solid #ffdd00;
+      outline-offset: 1px;
+      background-color: #ffdd00;
+    }
+  
+    &:hover {
+      opacity: 0.8;
+      transition: opacity 0.2s ease-in-out;
+    }
+  }
+  
+  // Ensure logo maintains its appearance
+  .moj-header__logotype {
+    display: block;
+    height: 47px;
+    width: 59px;
+  }
+
+  // Phase banner adjustments
+.govuk-phase-banner {
+    border-bottom: 1px solid #b1b4b6;
+    margin-top: 0;
+    padding-top: 0;
+  }
+  
+  // If you need to adjust the vertical spacing of the banner content
+  .govuk-phase-banner__content {
+    margin-bottom: 0;
+    padding: 10px 0;
+  }
+  
+  // Ensure consistent width with header
+  .govuk-width-container {
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 0 50px;
+  }
+
+  // Primary navigation container styles
+.moj-primary-navigation__container {
+    max-width: 1920px !important;
+    margin: 0 auto;
+    padding: 0 50px;
+  }
+  
+  // Ensure the navigation takes full width
+  .moj-primary-navigation {
+    width: 100%;
+  }
+  
+  // Optional: Add responsive padding for smaller screens
+  @media (max-width: 40.0625em) {
+    .moj-primary-navigation__container {
+      padding: 0 15px;
+    }
+  }
+
+  .govuk-tag {
+    font-weight: bold !important;
+    text-transform: capitalize !important;
+  }
