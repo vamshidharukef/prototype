@@ -95,18 +95,9 @@ runs:
         echo WEBAPP=$(az resource list --resource-type 'Microsoft.Web/sites' --query '[?contains(name, `${{ inputs.webapp }}`)].name' -o tsv) >> $GITHUB_ENV
       shell: bash
     
-    - name: ACR 🔐
-      uses: azure/docker-login@v2
-      with:
-        login-server: ${{ env.ACR }}
-        username: ${{ env.ACR_USER }}
-        password: ${{ inputs.acr }}
-    
-    - name: Check ACR Permissions
+    - name: ACR Login 🔐
       run: |
-        echo "Checking ACR permissions..."
-        az acr show --name ${{ env.ACR_USER }} --query id -o tsv
-        az role assignment list --assignee ${{ secrets.AZURE_CLIENT_ID }} --scope $(az acr show --name ${{ env.ACR_USER }} --query id -o tsv) --query "[?roleDefinitionName=='AcrPush'].roleDefinitionName" -o tsv
+        az acr login -n ${{ env.ACR_USER }}
       shell: bash
     
     - name: Build and push Docker image 🗃️
