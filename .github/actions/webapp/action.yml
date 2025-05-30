@@ -95,10 +95,13 @@ runs:
         echo WEBAPP=$(az resource list --resource-type 'Microsoft.Web/sites' --query '[?contains(name, `${{ inputs.webapp }}`)].name' -o tsv) >> $GITHUB_ENV
       shell: bash
     
-    - name: ACR Login 🔐
-      run: |
-        az acr login -n ${{ env.ACR_USER }}
-      shell: bash
+    - name: ACR 🔐
+      uses: azure/docker-login@v2
+      with:
+        login-server: ${{ env.ACR }}
+        username: ${{ env.ACR_USER }}
+        password: ${{ inputs.acr }}
+
     
     - name: Build and push Docker image 🗃️
       shell: bash
