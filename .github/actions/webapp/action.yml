@@ -102,6 +102,13 @@ runs:
         username: ${{ env.ACR_USER }}
         password: ${{ inputs.acr }}
     
+    - name: Check ACR Permissions
+      run: |
+        echo "Checking ACR permissions..."
+        az acr show --name ${{ env.ACR_USER }} --query id -o tsv
+        az role assignment list --assignee ${{ secrets.AZURE_CLIENT_ID }} --scope $(az acr show --name ${{ env.ACR_USER }} --query id -o tsv) --query "[?roleDefinitionName=='AcrPush'].roleDefinitionName" -o tsv
+      shell: bash
+    
     - name: Build and push Docker image 🗃️
       shell: bash
       run: |
