@@ -22,7 +22,7 @@ run-name: Proto-type base infrastructure build from ${{ github.repository }}
 on:
   push:
     branches:
-      - main
+      - infrastructure
 env:
   PRODUCT: prototype
   ENVIRONMENT: infrastructure
