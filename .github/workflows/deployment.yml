@@ -27,6 +27,9 @@ on:
       - completed
   schedule:
     - cron: '0 2 * * *'
+  push: 
+    branches:
+      - dev               
 
 env:
   PRODUCT: prototype
