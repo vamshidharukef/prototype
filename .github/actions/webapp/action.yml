@@ -104,6 +104,12 @@ runs:
         password: ${{ env.ACR_PASSWORD }}
 
     
+    - name: Debug - List directory contents
+      shell: bash
+      run: |
+       pwd
+       ls -la
+    
     - name: Build and push Docker image 🗃️
       shell: bash
       run: |
