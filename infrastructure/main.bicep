@@ -70,7 +70,7 @@ param additionalAllowIpRange string
 @description('Provide a globally unique name of your Azure Container Registry')
 param acrName string = 'acr${uniqueString(resourceGroup().id)}'
 
-@description('Provide a tier of your Azure Container Registry.')
+@description('Provide a tier of your Azure Container Registry')
 param acrSku string = 'Basic'
 
 var frontDoorSkuName = 'Premium_AzureFrontDoor'
