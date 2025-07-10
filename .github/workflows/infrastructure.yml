@@ -84,6 +84,7 @@ jobs:
           sed -i "s|{{VNET_SUBNET_PRIVATE_PREFIX}}|${{ secrets.VNET_SUBNET_PRIVATE_PREFIX }}|g" ./infrastructure/parameters.json
           sed -i "s|{{VNET_SUBNET_WEBAPP_PREFIX}}|${{ secrets.VNET_SUBNET_WEBAPP_PREFIX }}|g" ./infrastructure/parameters.json
           sed -i "s|{{ALLOWED_IP_RANGES}}|${{ secrets.ALLOWED_IP_RANGES }}|g" ./infrastructure/parameters.json
+          sed -i "s|{{ALLOW_ADDITIONAL_IP}}|${{ secrets.ALLOW_ADDITIONAL_IP }}|g" ./infrastructure/parameters.json
           
       - name: Deploy Azure Resources
         uses: azure/arm-deploy@v2
