@@ -502,7 +502,7 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
               matchVariable: 'RemoteAddr'
               operator: 'IPMatch'
               matchValue: [
-                allowIpRange,
+                allowIpRange
                 additionalAllowIpRange
               ]
             }
@@ -521,7 +521,7 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
               operator: 'IPMatch'
               negateCondition: true
               matchValue: [
-                allowIpRange,
+                allowIpRange
                 additionalAllowIpRange
               ]
               transforms: []
