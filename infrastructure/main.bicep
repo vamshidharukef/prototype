@@ -62,6 +62,9 @@ param imageTag string
 @description('Allows IP address')
 param allowIpRange string
 
+@description('Allows additional IP address')
+param additionalAllowIpRange string 
+
 @minLength(5)
 @maxLength(50)
 @description('Provide a globally unique name of your Azure Container Registry')
@@ -365,6 +368,12 @@ resource accessRestriction 'Microsoft.Web/sites/config@2024-04-01' = {
         ipAddress: allowIpRange        
       }
       {
+        ipAddress: additionalAllowIpRange
+        action: 'Allow'
+        priority: 102
+        name: 'OfficeIp'
+      }
+      {
         ipAddress: 'AzureFrontDoor.Backend'
         action: 'Allow'
         tag: 'ServiceTag'
@@ -493,7 +502,8 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
               matchVariable: 'RemoteAddr'
               operator: 'IPMatch'
               matchValue: [
-                allowIpRange
+                allowIpRange,
+                additionalAllowIpRange
               ]
             }
           ]
@@ -511,7 +521,8 @@ resource wafPolicy 'Microsoft.Network/FrontDoorWebApplicationFirewallPolicies@20
               operator: 'IPMatch'
               negateCondition: true
               matchValue: [
-                allowIpRange
+                allowIpRange,
+                additionalAllowIpRange
               ]
               transforms: []
             }

@@ -1,3 +1,31 @@
+# This action deploys a container to an Azure Web App.
+# It handles the entire process from checking out the repository,
+# setting up Azure CLI defaults, logging into Azure and ACR,
+# building and pushing the Docker image, and updating the Web App's container settings.
+#
+# Inputs:
+#   app-name: Name of the Azure Web App
+#   resource-group: Name of the Azure Resource Group
+#   image-name: Name of the container image
+#   image-tag: Tag of the container image
+#   branch: Source Git branch (default: 'main')
+#   region: Azure region
+#   group: Azure resource group
+#   azure-credentials: Azure subscription and resource group service principal
+#   product: Product name
+#   environment: Environment name
+#   version: Version
+#   acr: Azure container registry password
+#
+# The action performs the following steps:
+# 1. Checks out the repository
+# 2. Sets up Azure CLI defaults
+# 3. Logs into Azure
+# 4. Retrieves ACR and Web App information
+# 5. Logs into ACR
+# 6. Builds and pushes the Docker image
+# 7. Updates the Web App's container settings
+
 name: 'Deploy to Azure Web App'
 description: 'Deploy a container to an Azure Web App'
 inputs:
@@ -65,15 +93,16 @@ runs:
         echo ACR=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query loginServer -o tsv) >> $GITHUB_ENV
         echo ACR_USER=$(az acr show -n $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query name -o tsv) >> $GITHUB_ENV
         echo WEBAPP=$(az resource list --resource-type 'Microsoft.Web/sites' --query '[?contains(name, `${{ inputs.webapp }}`)].name' -o tsv) >> $GITHUB_ENV
+        echo ACR_PASSWORD=$(az acr credential show --name $(az resource list --resource-type 'Microsoft.ContainerRegistry/registries' --query '[0].name' -o tsv) --query passwords[0].value -o tsv) >> $GITHUB_ENV        
       shell: bash
     
-    - name: ACR Login 🔐
-      run: |
-        az acr login -n ${{ env.ACR_USER }}
-      shell: bash
+    - name: ACR 🔐
+      uses: azure/docker-login@v2
+      with:
+        login-server: ${{ env.ACR }}
+        username: ${{ env.ACR_USER }}
+        password: ${{ env.ACR_PASSWORD }}
 
-
-    
     - name: Build and push Docker image 🗃️
       shell: bash
       run: |

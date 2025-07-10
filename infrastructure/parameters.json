@@ -41,6 +41,9 @@
       "allowIpRange": {
         "value": "{{ALLOWED_IP_RANGES}}"
       },
+      "additionalAllowIpRange": {
+        "value": "{{ALLOW_ADDITIONAL_IP}}"
+      },
       "imageTag": {
         "value": ""
       },     
