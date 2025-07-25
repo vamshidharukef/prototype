@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
       "webAppName": {
-        "value": "vamshi-test"
+        "value": "gift-prototype"
       },
       "appServicePlanName": {
         "value": "basic-plan"
